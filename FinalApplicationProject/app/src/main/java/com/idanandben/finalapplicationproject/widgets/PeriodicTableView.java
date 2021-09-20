@@ -101,8 +101,8 @@ public class PeriodicTableView extends View {
     }
 
     private void measureCanvas() {
-        final int blockWidth = (int)(mContentRect.width() / (colAmount + 0.5));
-        final int blockHeight = mContentRect.height() / (rowAmount + 1);
+        final int blockWidth = (int)(mContentRect.width() / (colAmount + 3));
+        final int blockHeight = mContentRect.height() / (rowAmount + 3);
         blockSize = Math.min(blockWidth, blockHeight);
         padding = blockSize / 2;
 
@@ -195,9 +195,5 @@ public class PeriodicTableView extends View {
         mRect.top = mRect.bottom - blockSize + 1;
 
         final int number = block.getElement().atomicNumber;
-        if((number > 56 && number < 72) || (number > 88 && number < 104)) {
-            mRect.top += padding / 2;
-            mRect.bottom += padding / 2;
-        }
     }
 }

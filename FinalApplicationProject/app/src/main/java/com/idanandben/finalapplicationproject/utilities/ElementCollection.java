@@ -36,6 +36,59 @@ public class ElementCollection {
         ElementMap.put(16, new Element(16, "S", "Sulfur", 3, 16, 32.065, 5));
         ElementMap.put(17, new Element(17, "Cl", "Chlorine", 3, 17, 35.453, 6));
         ElementMap.put(18, new Element(18, "Ar", "Argon", 3, 18, 39.948, 2));
+        ElementMap.put(19, new Element(19, "K", "Potassium", 4, 1, 39.098, 3));
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ElementMap.put(37, new Element(37, "Rb", "Rubidium", 5, 1, 85.468, 2));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ElementMap.put(55, new Element(55, "Cs", "Cerium", 6, 1, 132.906, 3));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ElementMap.put(87, new Element(87, "Fr", "Francium", 7, 1, 223, 3));
     }
 }
