@@ -9,10 +9,12 @@ import android.view.View;
 
 import com.idanandben.finalapplicationproject.utilities.Element;
 import com.idanandben.finalapplicationproject.utilities.ElementCollection;
+import com.idanandben.finalapplicationproject.widgets.BankTableBlock;
 import com.idanandben.finalapplicationproject.widgets.ElementTableBlock;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -30,10 +32,21 @@ public class GameActivity extends AppCompatActivity {
 
     private void loadTable() {
         final ArrayList<ElementTableBlock> tableBlocks = new ArrayList<>();
-        ElementTableBlock block;
+        final ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
         ElementCollection collection = new ElementCollection();
+        int bankAmount = 10;
+        int rndAmount = 0;
+        Random rand = new Random();
         for(Element element : collection.GetElements().values()) {
-            block = new ElementTableBlock(element);
+            ElementTableBlock block = new ElementTableBlock(element);
+            if(rand.nextInt(2) == 1 && rndAmount < bankAmount) {
+                rndAmount++;
+                BankTableBlock bank = new BankTableBlock(element.symbol);
+                bank.setRow(9);
+                bank.setCol(rndAmount);
+                bankBlocks.add(bank);
+                block.setVisable(false);
+            }
 
             tableBlocks.add(block);
         }
@@ -41,7 +54,7 @@ public class GameActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 
-        tableView.setBlocks(tableBlocks, metrics);
+        tableView.setBlocks(tableBlocks, metrics.widthPixels, metrics.heightPixels, bankBlocks);
 
     }
 

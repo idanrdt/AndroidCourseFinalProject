@@ -21,7 +21,7 @@ import java.util.List;
 public class PeriodicTableView extends View {
 
     private final ArrayList<ElementTableBlock> tableBlocks = new ArrayList<>();
-    //private final ArrayList<String> bankTargets = new ArrayList<>();
+    private final ArrayList<BankTableBlock> bankTargets = new ArrayList<>();
 
     private final Paint mNumberPaint;
     private final Paint mBlockPaint = new Paint();
@@ -36,7 +36,8 @@ public class PeriodicTableView extends View {
     private int rowAmount;
     private int colAmount;
     private int blockSize;
-    private int clickedBlockIndex;
+
+    private BankTableBlock selectedBlock;
 
     private Point contentOffset = new Point();
 
@@ -74,16 +75,18 @@ public class PeriodicTableView extends View {
         mBlockStroke.setStrokeWidth(2);
     }
 
-    public void setBlocks(List<ElementTableBlock> elementsList, DisplayMetrics metrics) {
+    public void setBlocks(List<ElementTableBlock> elementsList, int width, int height, List<BankTableBlock> bankBlocks) {
         tableBlocks.clear();
         tableBlocks.addAll(elementsList);
+        bankTargets.clear();
+        bankTargets.addAll((bankBlocks));
 
         rowAmount = 7;
         colAmount = 18;
         mContentRect.left = 0;
-        mContentRect.right = metrics.widthPixels;
+        mContentRect.right = width;
         mContentRect.top = 0;
-        mContentRect.bottom = metrics.heightPixels;
+        mContentRect.bottom = height;
         measureCanvas();
 
         for(ElementTableBlock block : tableBlocks) {
@@ -91,6 +94,11 @@ public class PeriodicTableView extends View {
             block.setCol(block.getElement().group);
             block.setLocationY(blockSize * block.getCol());
             block.setLocationX(blockSize * block.getRow());
+        }
+
+        for(BankTableBlock bankBlock : bankTargets) {
+            bankBlock.setLocationY(blockSize * bankBlock.getCol());
+            bankBlock.setLocationX(blockSize * bankBlock.getRow());
         }
 
         ViewCompat.postInvalidateOnAnimation(this);
@@ -105,67 +113,89 @@ public class PeriodicTableView extends View {
             mRect.left = block.getLocationY() - blockSize / 2 - 1;
             mRect.bottom = block.getLocationX() + blockSize / 2 - 1;
             mRect.top = block.getLocationX() - blockSize / 2 - 1;
-
-            canvas.drawRect(mRect, mBlockPaint);
             canvas.drawRect(mRect, mBlockStroke);
 
-            canvas.drawText(block.getElement().symbol, mRect.left + blockSize / 2f,
-                    mRect.bottom - (int)(blockSize / 2.8), mSymbolPaint);
+            if(block.isisvisable()) {
 
-            canvas.drawText(String.valueOf(block.getElement().atomicNumber), mRect.left + blockSize / 20f,
-                    mRect.top + mNumberPaint.getTextSize(), mNumberPaint);
+                canvas.drawRect(mRect, mBlockPaint);
 
-            canvas.drawText(String.valueOf(block.getElement().weight), mRect.left + blockSize / 2f,
-                    mRect.bottom - blockSize / 20f, mSmallTextPaint);
+                canvas.drawText(block.getElement().symbol, mRect.left + blockSize / 2f,
+                        mRect.bottom - (int) (blockSize / 2.8), mSymbolPaint);
+
+                canvas.drawText(String.valueOf(block.getElement().atomicNumber), mRect.left + blockSize / 20f,
+                        mRect.top + mNumberPaint.getTextSize(), mNumberPaint);
+
+                canvas.drawText(String.valueOf(block.getElement().weight), mRect.left + blockSize / 2f,
+                        mRect.bottom - blockSize / 20f, mSmallTextPaint);
+            }
         }
 
         mRect.bottom = mRect.bottom + (int)(blockSize * 2);
         mRect.top = mRect.bottom - blockSize -1;
 
-/*        for(String str : bankTargets) {
+        for(BankTableBlock bank : bankTargets) {
+            mRect.right = bank.getLocationY() + blockSize / 2 - 1;
+            mRect.left = bank.getLocationY() - blockSize / 2 - 1;
+            mRect.bottom = bank.getLocationX() + blockSize / 2 - 1;
+            mRect.top = bank.getLocationX() - blockSize / 2 - 1;
+
             canvas.drawRect(mRect, mBlockStroke);
-            canvas.drawText(str,mRect.left + blockSize/2f,mRect.bottom - (int)(blockSize / 2.8), mSymbolPaint);
-            mRect.right += blockSize;
-            mRect.left = mRect.right - blockSize;
-        }*/
+            canvas.drawText(bank.getName(),mRect.left + blockSize/2f,mRect.bottom - (int)(blockSize / 2.8), mSymbolPaint);
+        }
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int size = blockSize / 2 + 1;
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                int size = blockSize / 2 + 1;
-                int blockIndex = 0;
-                for(ElementTableBlock block : tableBlocks) {
+                selectedBlock = null;
+                for(BankTableBlock block : bankTargets) {
                     if(((int)event.getX() > block.getLocationY() - size && (int)event.getX() < block.getLocationY() + size) &&
                             (int)event.getY() >= block.getLocationX() - size && (int)event.getY() <= block.getLocationX() + size) {
-                        clickedBlockIndex = blockIndex;
+                        selectedBlock = block;
                         break;
                     }
-                    blockIndex++;
                 }
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                if(clickedBlockIndex >= 0 && clickedBlockIndex <= tableBlocks.size()) {
-                    tableBlocks.get(clickedBlockIndex).setLocationY((int) event.getX());
-                    tableBlocks.get(clickedBlockIndex).setLocationX((int) event.getY());
+                if(selectedBlock != null) {
+                    selectedBlock.setLocationY((int) event.getX());
+                    selectedBlock.setLocationX((int) event.getY());
                     invalidate();
                 }
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                if(clickedBlockIndex >= 0 && clickedBlockIndex <= tableBlocks.size()) {
-                    ElementTableBlock block = tableBlocks.get(clickedBlockIndex);
-                    block.setLocationX(block.getInitializedLocationX());
-                    block.setLocationY(block.getInitializedLocationY());
-                    clickedBlockIndex = -1;
-                    invalidate();
+                if (selectedBlock != null) {
+
+                    for (ElementTableBlock elementBlock : tableBlocks) {
+                        if ((selectedBlock.getLocationX() > elementBlock.getLocationX() - size && selectedBlock.getLocationX() < elementBlock.getLocationX() + size) &&
+                                (selectedBlock.getLocationY() > elementBlock.getLocationY() - size && selectedBlock.getLocationY() < elementBlock.getLocationY() + size) &&
+                                !elementBlock.isisvisable() && elementBlock.getElement().symbol == selectedBlock.getName()) {
+                            elementBlock.setVisable(true);
+                            bankTargets.remove(selectedBlock);
+                            selectedBlock = null;
+                            invalidate();
+                            break;
+                        }
+                    }
+
+                    if (selectedBlock != null) {
+                        selectedBlock.setLocationX(selectedBlock.getInitializedLocationX());
+                        selectedBlock.setLocationY(selectedBlock.getInitializedLocationY());
+                        selectedBlock = null;
+                        invalidate();
+                    }
+                    break;
                 }
-                break;
             }
         }
-            return true;
+
+        return true;
     }
 
     @Override

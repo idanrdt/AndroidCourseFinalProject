@@ -1,22 +1,16 @@
 package com.idanandben.finalapplicationproject.widgets;
 
-import com.idanandben.finalapplicationproject.utilities.Element;
-
-public class ElementTableBlock {
-
-    private Element element;
+public class BankTableBlock {
+    private String name;
     private int col;
     private int row;
     private int locationX;
     private int locationY;
     private int initializedLocationX = -1;
     private int initializedLocationY = -1;
-    private int color = 0xFFCCCCCC;
-    private boolean isVisable;
 
-    public ElementTableBlock(Element element) {
-        this.element = element;
-        isVisable = true;
+    public BankTableBlock(String name) {
+        this.name = name;
     }
 
     public int getCol() {
@@ -33,14 +27,6 @@ public class ElementTableBlock {
 
     public void setRow(int row) {
         this.row = row;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public int getLocationX() {
@@ -65,16 +51,8 @@ public class ElementTableBlock {
         }
     }
 
-    public boolean isisvisable() {
-        return this.isVisable;
-    }
-
-    public void setVisable(boolean isvisable) {
-        this.isVisable = isvisable;
-    }
-
-    public Element getElement() {
-        return element;
+    public String getName() {
+        return name;
     }
 
     public int getInitializedLocationX() {
