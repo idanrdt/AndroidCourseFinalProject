@@ -3,9 +3,10 @@ package com.idanandben.finalapplicationproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
-import android.view.DragEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.idanandben.finalapplicationproject.utilities.Element;
 import com.idanandben.finalapplicationproject.utilities.ElementCollection;
@@ -20,14 +21,66 @@ public class GameActivity extends AppCompatActivity {
 
     private PeriodicTableView tableView;
 
+    private TextView timeLeftTextView;
+    private TextView pointsTextView;
+    private TextView lifeTextView;
+
+    private CountDownTimer timer;
+    private int pointsAmount;
+    private int lifeAmount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideSystemUI();
         setContentView(R.layout.activity_game);
-
         tableView = findViewById(R.id.tableView);
-        hideSystemUi();
+
         loadTable();
+        initializeAndStartTimer();
+        resetPointsAndLife();
+    }
+
+    private void resetPointsAndLife() {
+        pointsTextView = findViewById(R.id.points_text_view);
+        lifeTextView = findViewById(R.id.life_text_view);
+
+        pointsAmount = 0;
+        lifeAmount = 3; // load from settings
+
+        pointsTextView.setText("Points: " + pointsAmount);
+        lifeTextView.setText("Life: " + lifeAmount);
+    }
+
+    private void initializeAndStartTimer() {
+
+        timeLeftTextView = findViewById(R.id.time_left_text_view);
+        StringBuilder timeMessage = new StringBuilder();
+        timeMessage.append("Time Left: ");
+        timeMessage.append("01:00"); // load total time from settings
+        timeLeftTextView.setText(timeMessage);
+        timer = new CountDownTimer(60000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long seconds = millisUntilFinished / 1000 % 60;
+                long minutes = millisUntilFinished / 1000 / 60;
+                timeMessage.setLength(0);
+                timeMessage.append("Time Left: ");
+                timeMessage.append("0" + minutes + ":");
+                if(seconds < 10) {
+                    timeMessage.append("0");
+                }
+                timeMessage.append(seconds);
+
+                timeLeftTextView.setText(timeMessage);
+            }
+
+            @Override
+            public void onFinish() {
+                timeLeftTextView.setText("Gave Over!");
+                //stop table processing
+            }
+        }.start();
     }
 
     private void loadTable() {
@@ -55,17 +108,40 @@ public class GameActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 
         tableView.setBlocks(tableBlocks, metrics.widthPixels, metrics.heightPixels, bankBlocks);
-
+        setTableListeners();
     }
 
-    private void hideSystemUi() {
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    private void setTableListeners() {
+        tableView.setTableListeners(new PeriodicTableView.TableStateListeners() {
+            @Override
+            public void onPointGained(int amountOfPoints) {
+                pointsAmount += amountOfPoints;
+                pointsTextView.setText("Points: "+ pointsAmount);
+            }
+
+            @Override
+            public void onLifeLoss(int lifeLeft) {
+                lifeAmount -= lifeLeft;
+                lifeTextView.setText("Life: " + lifeAmount);
+            }
+
+            @Override
+            public void onTableCompleted() {
+                //stop table processing
+            }
+        });
+    }
+
+    private void hideSystemUI() {
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-        );
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        getSupportActionBar().hide();
     }
 }

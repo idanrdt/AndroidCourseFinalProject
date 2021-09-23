@@ -11,9 +11,13 @@ import android.util.DisplayMetrics;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
+
+import com.idanandben.finalapplicationproject.GameActivity;
+import com.idanandben.finalapplicationproject.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +45,13 @@ public class PeriodicTableView extends View {
 
     private Point contentOffset = new Point();
 
-    public interface ElementBankDragListener {
-        void onBankElementDrag(ElementTableBlock item);
+    public interface TableStateListeners {
+        void onPointGained(int amountOfPoints);
+        void onLifeLoss(int lifeLeft);
+        void onTableCompleted();
     }
 
-    private ElementBankDragListener bankElementDragListener;
+    private TableStateListeners listeners;
 
     public PeriodicTableView(Context context) {
         this(context, null, 0);
@@ -89,30 +95,38 @@ public class PeriodicTableView extends View {
         mContentRect.bottom = height;
         measureCanvas();
 
+        int startBankOffset = (width / 2) - (bankBlocks.size() * (blockSize + bankBlocks.size())) / 2 ;
+        int startTableOffset = (width / 2) - (colAmount * (blockSize + colAmount / 2)) / 2;
+
         for(ElementTableBlock block : tableBlocks) {
             block.setRow(block.getElement().period);
             block.setCol(block.getElement().group);
-            block.setLocationY(blockSize * block.getCol());
+            block.setLocationY(blockSize * block.getCol() + startTableOffset);
             block.setLocationX(blockSize * block.getRow());
         }
 
         for(BankTableBlock bankBlock : bankTargets) {
-            bankBlock.setLocationY(blockSize * bankBlock.getCol());
+            bankBlock.setLocationY((blockSize * bankBlock.getCol()) + startBankOffset);
             bankBlock.setLocationX(blockSize * bankBlock.getRow());
         }
 
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
+    public void setTableListeners(TableStateListeners listeners) {
+        this.listeners = listeners;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        int boxSize = blockSize / 2 - 1;
 
         for(ElementTableBlock block : tableBlocks) {
-            mRect.right = block.getLocationY() + blockSize / 2 - 1;
-            mRect.left = block.getLocationY() - blockSize / 2 - 1;
-            mRect.bottom = block.getLocationX() + blockSize / 2 - 1;
-            mRect.top = block.getLocationX() - blockSize / 2 - 1;
+            mRect.right = block.getLocationY() + boxSize;
+            mRect.left = block.getLocationY() - boxSize;
+            mRect.bottom = block.getLocationX() + boxSize;
+            mRect.top = block.getLocationX() - boxSize;
             canvas.drawRect(mRect, mBlockStroke);
 
             if(block.isisvisable()) {
@@ -130,17 +144,19 @@ public class PeriodicTableView extends View {
             }
         }
 
-        mRect.bottom = mRect.bottom + (int)(blockSize * 2);
-        mRect.top = mRect.bottom - blockSize -1;
-
         for(BankTableBlock bank : bankTargets) {
-            mRect.right = bank.getLocationY() + blockSize / 2 - 1;
-            mRect.left = bank.getLocationY() - blockSize / 2 - 1;
-            mRect.bottom = bank.getLocationX() + blockSize / 2 - 1;
-            mRect.top = bank.getLocationX() - blockSize / 2 - 1;
+            mRect.right = bank.getLocationY() + boxSize;
+            mRect.left = bank.getLocationY() - boxSize;
+            mRect.bottom = bank.getLocationX() + boxSize;
+            mRect.top = bank.getLocationX() - boxSize;
 
             canvas.drawRect(mRect, mBlockStroke);
+            canvas.drawRect(mRect, mBlockPaint);
             canvas.drawText(bank.getName(),mRect.left + blockSize/2f,mRect.bottom - (int)(blockSize / 2.8), mSymbolPaint);
+        }
+
+        if(bankTargets.size() == 0) {
+            listeners.onTableCompleted();
         }
     }
 
@@ -175,11 +191,12 @@ public class PeriodicTableView extends View {
                     for (ElementTableBlock elementBlock : tableBlocks) {
                         if ((selectedBlock.getLocationX() > elementBlock.getLocationX() - size && selectedBlock.getLocationX() < elementBlock.getLocationX() + size) &&
                                 (selectedBlock.getLocationY() > elementBlock.getLocationY() - size && selectedBlock.getLocationY() < elementBlock.getLocationY() + size) &&
-                                !elementBlock.isisvisable() && elementBlock.getElement().symbol == selectedBlock.getName()) {
+                                !elementBlock.isisvisable() && elementBlock.getElement().symbol.equals(selectedBlock.getName())) {
                             elementBlock.setVisable(true);
                             bankTargets.remove(selectedBlock);
                             selectedBlock = null;
                             invalidate();
+                            listeners.onPointGained(1);
                             break;
                         }
                     }
@@ -189,6 +206,7 @@ public class PeriodicTableView extends View {
                         selectedBlock.setLocationY(selectedBlock.getInitializedLocationY());
                         selectedBlock = null;
                         invalidate();
+                        listeners.onLifeLoss(1);
                     }
                     break;
                 }
