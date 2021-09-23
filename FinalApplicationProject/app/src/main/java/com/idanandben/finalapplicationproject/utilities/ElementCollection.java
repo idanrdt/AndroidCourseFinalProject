@@ -90,5 +90,22 @@ public class ElementCollection {
 
 
         ElementMap.put(87, new Element(87, "Fr", "Francium", 7, 1, 223, 3));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

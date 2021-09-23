@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -32,13 +31,13 @@ public class PeriodicTableView extends View {
     private final Rect drawingRect = new Rect();
     private final Rect tableRect = new Rect();
 
-    private int rowAmount = 7;
-    private int colAmount = 18;
+    private final int rowAmount = 7;
+    private final int colAmount = 18;
     private int blockSize;
 
     private BankTableBlock selectedBlock;
 
-    private Point contentOffset = new Point();
+    private final Point contentOffset = new Point();
 
     private boolean tableReacting;
 
