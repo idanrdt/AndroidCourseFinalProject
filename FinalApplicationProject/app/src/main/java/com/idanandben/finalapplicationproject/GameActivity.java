@@ -15,6 +15,7 @@ import com.idanandben.finalapplicationproject.widgets.ElementTableBlock;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
@@ -65,8 +66,8 @@ public class GameActivity extends AppCompatActivity {
                 long seconds = millisUntilFinished / 1000 % 60;
                 long minutes = millisUntilFinished / 1000 / 60;
                 timeMessage.setLength(0);
-                timeMessage.append("Time Left: ");
-                timeMessage.append("0" + minutes + ":");
+                timeMessage.append("Time Left: 0");
+                timeMessage.append(minutes).append(":");
                 if(seconds < 10) {
                     timeMessage.append("0");
                 }
@@ -77,8 +78,7 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                timeLeftTextView.setText("Gave Over!");
-                //stop table processing
+                finnishGame(false);
             }
         }.start();
     }
@@ -123,13 +123,23 @@ public class GameActivity extends AppCompatActivity {
             public void onLifeLoss(int lifeLeft) {
                 lifeAmount -= lifeLeft;
                 lifeTextView.setText("Life: " + lifeAmount);
+                if(lifeAmount <= 0 ) {
+                    finnishGame(false);
+                }
             }
 
             @Override
             public void onTableCompleted() {
-                //stop table processing
+                finnishGame(true);
             }
         });
+    }
+
+    private void finnishGame(boolean victorious) {
+        tableView.stopTableProcessing();
+        if (!victorious) {
+            timer.cancel();
+        }
     }
 
     private void hideSystemUI() {
@@ -142,6 +152,6 @@ public class GameActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
 }
