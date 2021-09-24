@@ -1,7 +1,9 @@
 package com.idanandben.finalapplicationproject;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
@@ -30,49 +32,49 @@ public class GameActivity extends AppCompatActivity {
     private int pointsAmount;
     private int lifeAmount;
 
+    //TODO:
+    //1. Get Settings from intent (level, life points, time).
+    //2. Add time icon.
+    //3. Add life icon.
+    //4. Add level title.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUI();
         setContentView(R.layout.activity_game);
         tableView = findViewById(R.id.tableView);
+        startNewGame();
+    }
 
+    private void startNewGame() {
+        hideSystemUI();
         loadTable();
-        initializeAndStartTimer();
+        initializeAndStartTimer(1, 0);
         resetPointsAndLife();
     }
 
+    //TODO:
+    //1. Set strings in file
     private void resetPointsAndLife() {
         pointsTextView = findViewById(R.id.points_text_view);
         lifeTextView = findViewById(R.id.life_text_view);
 
-        pointsAmount = 0;
-        lifeAmount = 3; // load from settings
+        pointsAmount = 0; // load from settings if different from level 1.
+        lifeAmount = 3; // load from settings.
 
         pointsTextView.setText("Points: " + pointsAmount);
         lifeTextView.setText("Life: " + lifeAmount);
     }
 
-    private void initializeAndStartTimer() {
-
+    private void initializeAndStartTimer(int minutes, int seconds) {
         timeLeftTextView = findViewById(R.id.time_left_text_view);
-        StringBuilder timeMessage = new StringBuilder();
-        timeMessage.append("Time Left: ");
-        timeMessage.append("01:00"); // load total time from settings
+        String timeMessage = updateTimeMessage(minutes, seconds);
         timeLeftTextView.setText(timeMessage);
-        timer = new CountDownTimer(60000, 1000) {
+        long totalTime = minutes * 60000 + seconds * 1000;
+        timer = new CountDownTimer(totalTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                long seconds = millisUntilFinished / 1000 % 60;
-                long minutes = millisUntilFinished / 1000 / 60;
-                timeMessage.setLength(0);
-                timeMessage.append("Time Left: 0");
-                timeMessage.append(minutes).append(":");
-                if(seconds < 10) {
-                    timeMessage.append("0");
-                }
-                timeMessage.append(seconds);
-
+                String timeMessage = updateTimeMessage(millisUntilFinished / 1000 / 60, millisUntilFinished / 1000 % 60);
                 timeLeftTextView.setText(timeMessage);
             }
 
@@ -83,6 +85,22 @@ public class GameActivity extends AppCompatActivity {
         }.start();
     }
 
+    //TODO:
+    //1. load time from settings
+    private String updateTimeMessage(long minutes, long seconds){
+        StringBuilder timeMessage = new StringBuilder();
+        timeMessage.append("Time Left: 0");
+        timeMessage.append(minutes).append(":");
+        if(seconds < 10) {
+            timeMessage.append("0");
+        }
+        timeMessage.append(seconds);
+        return String.valueOf(timeMessage);
+    }
+
+
+    //TODO:
+    //1. Generate 10-15 random items from wanted list.
     private void loadTable() {
         final ArrayList<ElementTableBlock> tableBlocks = new ArrayList<>();
         final ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
@@ -107,10 +125,12 @@ public class GameActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 
-        tableView.setBlocks(tableBlocks, metrics.widthPixels, metrics.heightPixels, bankBlocks);
+        tableView.initializeTable(tableBlocks, metrics.widthPixels, metrics.heightPixels, bankBlocks);
         setTableListeners();
     }
 
+    //TODO:
+    //1. Set strings in file
     private void setTableListeners() {
         tableView.setTableListeners(new PeriodicTableView.TableStateListeners() {
             @Override
@@ -139,7 +159,28 @@ public class GameActivity extends AppCompatActivity {
         tableView.stopTableProcessing();
         if (!victorious) {
             timer.cancel();
+            showLossDialog();
         }
+
+        //advance to next level?
+    }
+
+    //TODO:
+    //1. Set strings in file
+    //2. Click "No" -> return to main screen without save.
+    private void showLossDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Game Over");
+        dialogBuilder.setMessage("Play again?");
+        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startNewGame();
+            }
+        });
+        dialogBuilder.setNegativeButton("No", null);
+        AlertDialog endDialog = dialogBuilder.create();
+        endDialog.show();
     }
 
     private void hideSystemUI() {
