@@ -91,7 +91,12 @@ public class CustomGameFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Select Difficulty");
 
-        builder.setItems(ConstProperties.DIFFICULTIES, (dialog, which) -> gameSelectedListener.onLevelSelectedListener(which, selectedLevel));
+        builder.setItems(ConstProperties.DIFFICULTIES, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                gameSelectedListener.onLevelSelectedListener(selectedLevel, ++which);
+            }
+        });
 
         AlertDialog dialog = builder.create();
         dialog.show();

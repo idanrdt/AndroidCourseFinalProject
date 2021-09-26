@@ -41,7 +41,7 @@ public class UserSettings implements Parcelable {
         }
     };
 
-    public int getCurrentStage() {
+    public int getCurrentLevel() {
         return currentStage;
     }
 

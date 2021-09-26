@@ -3,7 +3,6 @@ package com.idanandben.finalapplicationproject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
@@ -31,6 +30,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView timeLeftTextView;
     private TextView pointsTextView;
     private TextView lifeTextView;
+    private TextView instructionsTextView;
 
     private CountDownTimer timer;
     private int pointsAmount;
@@ -49,14 +49,18 @@ public class GameActivity extends AppCompatActivity {
 
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
         tableView = findViewById(R.id.tableView);
+        instructionsTextView = findViewById(R.id.instruction_label);
+
+        saveInstanceInPrefrences();
+
         startNewGame();
     }
 
     private void startNewGame() {
         hideSystemUI();
         loadTable();
-        initializeAndStartTimer(1, 0);
         resetPointsAndLife();
+        showInstructions();
     }
 
     //TODO:
@@ -65,8 +69,21 @@ public class GameActivity extends AppCompatActivity {
         pointsTextView = findViewById(R.id.points_text_view);
         lifeTextView = findViewById(R.id.life_text_view);
 
-        pointsAmount = 0; // load from settings if different from level 1.
-        lifeAmount = 3; // load from settings.
+        pointsAmount = userSettings.getScore();
+
+        switch (userSettings.getDifficulty()) {
+            case 1: {
+                lifeAmount = ConstProperties.EASY_LIFE_AMOUNT;
+                break;
+            }
+            case 2: {
+                lifeAmount = ConstProperties.MEDIUM_LIFE_AMOUNT;
+                break;
+            }
+            case 3: {
+                lifeAmount = ConstProperties.HARD_LIFE_AMOUNT;
+            }
+        }
 
         pointsTextView.setText("Points: " + pointsAmount);
         lifeTextView.setText("Life: " + lifeAmount);
@@ -116,7 +133,7 @@ public class GameActivity extends AppCompatActivity {
         Random rand = new Random();
         for(Element element : collection.getElements().values()) {
             ElementTableBlock block = new ElementTableBlock(element, collection.getColorMap().get(element.colorGroup));
-            if(rand.nextInt(2) == 1 && rndAmount < bankAmount) {
+            if(rand.nextInt(3) == 1 && rndAmount < bankAmount && (element.atomicNumber != 71 && element.atomicNumber != 103)) {
                 rndAmount++;
                 BankTableBlock bank = new BankTableBlock(element.symbol);
                 bank.setRow(9);
@@ -164,14 +181,22 @@ public class GameActivity extends AppCompatActivity {
 
     private void finnishGame(boolean victorious) {
         tableView.stopTableProcessing();
+        timer.cancel();
+        int currentLevel = userSettings.getCurrentLevel();
         if (!victorious) {
-            timer.cancel();
             showLossDialog();
         } else {
-            //update max level in preferences
+            showWinningDialog();
+            currentLevel++;
+            userSettings.setCurrentStage(currentLevel);
+            saveInstanceInPrefrences();
         }
 
-        //advance to next level?
+        if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
+            startNewGame();
+        } else {
+            //show score board;
+        }
     }
 
     //TODO:
@@ -182,20 +207,14 @@ public class GameActivity extends AppCompatActivity {
         dialogBuilder.setTitle("Game Over");
         dialogBuilder.setMessage("Play again?");
 
-        dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startNewGame();
-            }
-        });
-        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
+        dialogBuilder.setPositiveButton("Yes", (dialog, which) -> startNewGame());
+        dialogBuilder.setNegativeButton("No", (dialog, which) -> finish());
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
+    }
+
+    private void showWinningDialog() {
+        userSettings.setScore(pointsAmount);
     }
 
     private void hideSystemUI() {
@@ -209,5 +228,83 @@ public class GameActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         Objects.requireNonNull(getSupportActionBar()).hide();
+    }
+
+    private void showInstructions() {
+        instructionsTextView.setVisibility(View.VISIBLE);
+        instructionsTextView.setText(getInstructionsForTextView());
+        tableView.stopTableProcessing();
+        CountDownTimer timer = new CountDownTimer(35 * 100, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                instructionsTextView.setVisibility(View.GONE);
+                initializeAndStartTimer(getTimerMinutes(), getTimerSeconds());
+                tableView.startTableProcessing();
+            }
+        }.start();
+    }
+
+    private int getTimerMinutes() {
+        int minutes = 0;
+        switch (userSettings.getDifficulty()) {
+            case 1: {
+                minutes = ConstProperties.EASY_TIME_MINUTES;
+                break;
+            }
+            case 2: {
+                minutes = ConstProperties.MEDIUM_TIME_MINUTES;
+                break;
+            }
+            case 3: {
+                minutes = ConstProperties.HARD_TIME_MINUTES;
+            }
+        }
+        return minutes;
+    }
+
+    private int getTimerSeconds() {
+        int seconds = 0;
+        switch (userSettings.getDifficulty()) {
+            case 1: {
+                seconds = ConstProperties.EASY_TIME_SECONDS;
+                break;
+            }
+            case 2: {
+                seconds = ConstProperties.MEDIUM_TIME_SECONDS;
+                break;
+            }
+            case 3: {
+                seconds = ConstProperties.HARD_TIME_SECONDS;
+            }
+        }
+        return seconds;    }
+
+    private String getInstructionsForTextView() {
+        String instructions = "";
+        switch (userSettings.getCurrentLevel()) {
+            case 1: {
+                instructions = ConstProperties.LEVEL1_INSTRUCTIONS;
+                break;
+            }
+            case 2: {
+                instructions = ConstProperties.LEVEL2_INSTRUCTIONS;
+                break;
+            }
+            case 3: {
+                instructions = ConstProperties.LEVEL3_INSTRUCTIONS;
+                break;
+            }
+        }
+
+        return instructions;
+    }
+
+    private void saveInstanceInPrefrences() {
+        getSharedPreferences(ConstProperties.USER_SETTINGS_MSG, MODE_PRIVATE).edit().putInt(ConstProperties.CURRENT_LEVEL_MSG, userSettings.getCurrentLevel())
+                .putInt(ConstProperties.CURRENT_DIFFICULTY_MSG, userSettings.getDifficulty()).apply();
     }
 }

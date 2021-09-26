@@ -2,6 +2,7 @@ package com.idanandben.finalapplicationproject.utilities;
 
 import android.graphics.Color;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,10 +10,12 @@ public class ElementCollection {
 
     private static final Map<Integer, Element> elementMap = new HashMap<>();
     private static final Map<Integer, Integer> colorMap = new HashMap<>();
+    private static final ArrayList<Integer> wantedList = new ArrayList<>();
 
     public ElementCollection() {
         createElementMap();
         createColorMap();
+        createWantedList();
     }
 
     public Map<Integer, Element> getElements() {
@@ -20,6 +23,8 @@ public class ElementCollection {
     }
 
     public Map<Integer, Integer> getColorMap() { return colorMap; }
+
+    public ArrayList<Integer> getWantedList() { return wantedList; }
 
     private void createElementMap() {
         elementMap.put(1, new Element(1,"H","Hydrogen",1,1,1.008,1));
@@ -127,5 +132,39 @@ public class ElementCollection {
         colorMap.put(6, Color.parseColor("#cccccc"));
         colorMap.put(7, Color.parseColor("#cccc9a"));
         colorMap.put(8, Color.parseColor("#f1ff90"));
+    }
+
+    private void createWantedList() {
+        wantedList.add(1);
+        wantedList.add(2);
+        wantedList.add(5);
+        wantedList.add(7);
+        wantedList.add(8);
+        wantedList.add(9);
+        wantedList.add(10);
+        wantedList.add(11);
+        wantedList.add(13);
+        wantedList.add(14);
+        wantedList.add(15);
+        wantedList.add(16);
+        wantedList.add(17);
+        wantedList.add(18);
+        wantedList.add(19);
+        wantedList.add(20);
+        wantedList.add(22);
+        wantedList.add(24);
+        wantedList.add(26);
+        wantedList.add(28);
+        wantedList.add(29);
+        wantedList.add(30);
+        wantedList.add(35);
+        wantedList.add(47);
+        wantedList.add(50);
+        wantedList.add(53);
+        wantedList.add(78);
+        wantedList.add(79);
+        wantedList.add(80);
+        wantedList.add(82);
+        wantedList.add(84);
     }
 }
