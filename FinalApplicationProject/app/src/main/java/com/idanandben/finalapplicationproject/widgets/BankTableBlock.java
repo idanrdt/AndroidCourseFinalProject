@@ -2,6 +2,8 @@ package com.idanandben.finalapplicationproject.widgets;
 
 public class BankTableBlock {
     private String name;
+
+    private int color;
     private int col;
     private int row;
     private int locationX;
@@ -51,9 +53,15 @@ public class BankTableBlock {
         }
     }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     public String getName() {
         return name;
     }
+
+    public int getColor() { return color; }
 
     public int getInitializedLocationX() {
         return initializedLocationX;

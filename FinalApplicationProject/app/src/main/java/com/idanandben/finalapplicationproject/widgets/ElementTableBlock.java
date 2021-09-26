@@ -4,18 +4,23 @@ import com.idanandben.finalapplicationproject.utilities.Element;
 
 public class ElementTableBlock {
 
-    private Element element;
+    private final Element element;
     private int col;
     private int row;
     private int locationX;
     private int locationY;
     private int initializedLocationX = -1;
     private int initializedLocationY = -1;
-    private int color = 0xFFCCCCCC;
+    private int color;
     private boolean isVisable;
 
     public ElementTableBlock(Element element) {
+        this(element, 0xFFCCCCCC);
+    }
+
+    public ElementTableBlock(Element element, int color) {
         this.element = element;
+        this.color = color;
         isVisable = true;
     }
 
@@ -65,12 +70,12 @@ public class ElementTableBlock {
         }
     }
 
-    public boolean isisvisable() {
+    public boolean getVisibility() {
         return this.isVisable;
     }
 
-    public void setVisable(boolean isvisable) {
-        this.isVisable = isvisable;
+    public void setVisibility(boolean visable) {
+        this.isVisable = visable;
     }
 
     public Element getElement() {

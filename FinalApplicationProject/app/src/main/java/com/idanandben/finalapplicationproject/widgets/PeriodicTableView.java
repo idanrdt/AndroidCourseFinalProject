@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PeriodicTableView extends View {
 
@@ -43,8 +44,8 @@ public class PeriodicTableView extends View {
     private boolean isTableWorking;
 
     public interface TableStateListeners {
-        void onPointGained(int amountOfPoints);
-        void onLifeLoss(int lifeLeft);
+        void onCorrectElementPlaced();
+        void onWrongElementPlaced();
         void onTableCompleted();
     }
 
@@ -130,7 +131,8 @@ public class PeriodicTableView extends View {
             drawingCursor.top = block.getLocationX() - boxSize;
             canvas.drawRect(drawingCursor, blockStroke);
 
-            if(block.isisvisable()) {
+            if(block.getVisibility()) {
+                blockPaint.setColor(block.getColor());
 
                 canvas.drawRect(drawingCursor, blockPaint);
 
@@ -153,6 +155,8 @@ public class PeriodicTableView extends View {
             drawingCursor.bottom = bank.getLocationX() + boxSize;
             drawingCursor.top = bank.getLocationX() - boxSize;
 
+            blockPaint.setColor(bank.getColor());
+
             canvas.drawRect(drawingCursor, blockStroke);
             canvas.drawRect(drawingCursor, blockPaint);
             canvas.drawText(bank.getName(), drawingCursor.left + bankBlockSize /2f, drawingCursor.bottom - (int)(bankBlockSize / 2.8), symbolPaint);
@@ -163,10 +167,8 @@ public class PeriodicTableView extends View {
         }
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean continueProcessing;
         if(isTableWorking) {
             int size = tableBlockSize / 2 + 1;
 
@@ -196,15 +198,15 @@ public class PeriodicTableView extends View {
                         for (ElementTableBlock elementBlock : tableBlocks) {
                             if ((selectedBlock.getLocationX() > elementBlock.getLocationX() - size && selectedBlock.getLocationX() < elementBlock.getLocationX() + size) &&
                                     (selectedBlock.getLocationY() > elementBlock.getLocationY() - size && selectedBlock.getLocationY() < elementBlock.getLocationY() + size)) {
-                                if(!elementBlock.isisvisable() && elementBlock.getElement().symbol.equals(selectedBlock.getName())) {
-                                    elementBlock.setVisable(true);
+                                if(!elementBlock.getVisibility() && elementBlock.getElement().symbol.equals(selectedBlock.getName())) {
+                                    elementBlock.setVisibility(true);
                                     bankTargets.remove(selectedBlock);
                                     selectedBlock = null;
                                     invalidate();
-                                    listeners.onPointGained(1);
+                                    listeners.onCorrectElementPlaced();
                                     break;
                                 } else {
-                                    listeners.onLifeLoss(1);
+                                    listeners.onWrongElementPlaced();
                                 }
                             }
                         }
@@ -219,14 +221,9 @@ public class PeriodicTableView extends View {
                     }
                 }
             }
-            continueProcessing = true;
-        }
-        else {
-
-            continueProcessing = false;
         }
 
-        return continueProcessing;
+        return true;
     }
 
     private void measureCanvas() {

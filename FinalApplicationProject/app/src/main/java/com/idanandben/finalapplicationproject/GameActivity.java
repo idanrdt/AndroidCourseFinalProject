@@ -10,8 +10,10 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.TextView;
 
+import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 import com.idanandben.finalapplicationproject.utilities.Element;
 import com.idanandben.finalapplicationproject.utilities.ElementCollection;
+import com.idanandben.finalapplicationproject.utilities.UserSettings;
 import com.idanandben.finalapplicationproject.widgets.BankTableBlock;
 import com.idanandben.finalapplicationproject.widgets.ElementTableBlock;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
@@ -23,6 +25,8 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity {
 
     private PeriodicTableView tableView;
+
+    private UserSettings userSettings;
 
     private TextView timeLeftTextView;
     private TextView pointsTextView;
@@ -42,6 +46,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         hideSystemUI();
         setContentView(R.layout.activity_game);
+
+        userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
         tableView = findViewById(R.id.tableView);
         startNewGame();
     }
@@ -108,15 +114,16 @@ public class GameActivity extends AppCompatActivity {
         int bankAmount = 10;
         int rndAmount = 0;
         Random rand = new Random();
-        for(Element element : collection.GetElements().values()) {
-            ElementTableBlock block = new ElementTableBlock(element);
+        for(Element element : collection.getElements().values()) {
+            ElementTableBlock block = new ElementTableBlock(element, collection.getColorMap().get(element.colorGroup));
             if(rand.nextInt(2) == 1 && rndAmount < bankAmount) {
                 rndAmount++;
                 BankTableBlock bank = new BankTableBlock(element.symbol);
                 bank.setRow(9);
                 bank.setCol(rndAmount);
+                bank.setColor(collection.getColorMap().get(element.colorGroup));
                 bankBlocks.add(bank);
-                block.setVisable(false);
+                block.setVisibility(false);
             }
 
             tableBlocks.add(block);
@@ -134,14 +141,14 @@ public class GameActivity extends AppCompatActivity {
     private void setTableListeners() {
         tableView.setTableListeners(new PeriodicTableView.TableStateListeners() {
             @Override
-            public void onPointGained(int amountOfPoints) {
-                pointsAmount += amountOfPoints;
+            public void onCorrectElementPlaced() {
+                pointsAmount ++;
                 pointsTextView.setText("Points: "+ pointsAmount);
             }
 
             @Override
-            public void onLifeLoss(int lifeLeft) {
-                lifeAmount -= lifeLeft;
+            public void onWrongElementPlaced() {
+                lifeAmount --;
                 lifeTextView.setText("Life: " + lifeAmount);
                 if(lifeAmount <= 0 ) {
                     finnishGame(false);
@@ -160,6 +167,8 @@ public class GameActivity extends AppCompatActivity {
         if (!victorious) {
             timer.cancel();
             showLossDialog();
+        } else {
+            //update max level in preferences
         }
 
         //advance to next level?
@@ -172,13 +181,19 @@ public class GameActivity extends AppCompatActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Game Over");
         dialogBuilder.setMessage("Play again?");
+
         dialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startNewGame();
             }
         });
-        dialogBuilder.setNegativeButton("No", null);
+        dialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
     }
