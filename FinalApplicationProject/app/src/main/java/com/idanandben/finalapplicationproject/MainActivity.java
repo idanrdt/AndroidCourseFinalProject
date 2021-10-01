@@ -3,26 +3,46 @@ package com.idanandben.finalapplicationproject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Menu;
+import android.view.OrientationEventListener;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
+
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        playAudio();
         showMainMenu();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void showMainMenu() {
@@ -85,5 +105,31 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
+    }
+    private void playAudio() {
+
+        String audioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+
+        // initializing media player
+        mediaPlayer = new MediaPlayer();
+
+        // below line is use to set the audio
+        // stream type for our media player.
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        // below line is use to set our
+        // url to our media player.
+        try {
+            mediaPlayer.setDataSource(audioUrl);
+            // below line is use to prepare
+            // and start our media player.
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // below line is use to display a toast message.
+        Toast.makeText(this, "Audio started playing..", Toast.LENGTH_SHORT).show();
     }
 }
