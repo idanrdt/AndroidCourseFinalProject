@@ -9,7 +9,7 @@ public class Element {
     public final int group;
     public final double weight;
     public final int colorGroup;
-    //add image for stage 3
+    public final String familyName;
 
     public Element(int atomicNumber, String symbol, String name, int period, int group, double weight, int colorGroup) {
         this.atomicNumber = atomicNumber;
@@ -19,5 +19,7 @@ public class Element {
         this.group = group;
         this.weight = weight;
         this.colorGroup = colorGroup;
+        this.familyName = ConstProperties.ELEMENTS_FAMILY_NAMES[colorGroup];
+
     }
 }

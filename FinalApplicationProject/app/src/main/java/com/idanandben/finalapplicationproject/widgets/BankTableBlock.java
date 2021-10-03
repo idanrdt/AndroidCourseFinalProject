@@ -1,9 +1,14 @@
 package com.idanandben.finalapplicationproject.widgets;
 
+import com.idanandben.finalapplicationproject.utilities.ConstProperties;
+
 public class BankTableBlock {
-    private String name;
+
+    private final String name;
+    private String atomicNumber;
 
     private int color;
+    private int colorGroup;
     private int col;
     private int row;
     private int locationX;
@@ -13,6 +18,7 @@ public class BankTableBlock {
 
     public BankTableBlock(String name) {
         this.name = name;
+        this.atomicNumber = "";
     }
 
     public int getCol() {
@@ -53,6 +59,8 @@ public class BankTableBlock {
         }
     }
 
+    public int getColor() { return color; }
+
     public void setColor(int color) {
         this.color = color;
     }
@@ -61,7 +69,17 @@ public class BankTableBlock {
         return name;
     }
 
-    public int getColor() { return color; }
+    public String getAtomicNumber() {
+        return this.atomicNumber;
+    }
+
+    public void setAtomicNumber(String number) {
+        this.atomicNumber = number;
+    }
+
+    public int getColorGroup() { return this.colorGroup; }
+
+    public void setColorGroup(int group) { this.colorGroup = group; }
 
     public int getInitializedLocationX() {
         return initializedLocationX;

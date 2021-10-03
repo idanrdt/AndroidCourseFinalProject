@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class ElementCollection {
 
-    private static final Map<Integer, Element> elementMap = new HashMap<>();
-    private static final Map<Integer, Integer> colorMap = new HashMap<>();
-    private static final ArrayList<Integer> wantedList = new ArrayList<>();
+    private final Map<Integer, Element> elementMap = new HashMap<>();
+    private final Map<Integer, Integer> colorMap = new HashMap<>();
+    private final ArrayList<Integer> wantedList = new ArrayList<>();
 
     public ElementCollection() {
         createElementMap();

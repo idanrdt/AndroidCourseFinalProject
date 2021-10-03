@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.media.MediaPlayer;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
@@ -15,12 +16,16 @@ import com.idanandben.finalapplicationproject.utilities.Element;
 import com.idanandben.finalapplicationproject.utilities.ElementCollection;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
 import com.idanandben.finalapplicationproject.widgets.BankTableBlock;
-import com.idanandben.finalapplicationproject.widgets.ElementTableBlock;
+import com.idanandben.finalapplicationproject.widgets.TableElementBlock;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -36,6 +41,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView instructionsTextView;
 
     private CountDownTimer timer;
+    private CountDownTimer elementSwitchTimer;
     private int pointsAmount;
     private int lifeAmount;
 
@@ -54,9 +60,14 @@ public class GameActivity extends AppCompatActivity {
         tableView = findViewById(R.id.tableView);
         instructionsTextView = findViewById(R.id.instruction_label);
 
-        saveInstanceInPrefrences();
+        saveInstanceInPreferences();
 
         startNewGame();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     private void startNewGame() {
@@ -73,20 +84,8 @@ public class GameActivity extends AppCompatActivity {
         lifeTextView = findViewById(R.id.life_text_view);
 
         pointsAmount = userSettings.getScore();
+        lifeAmount = ConstProperties.LIFE_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
 
-        switch (userSettings.getDifficulty()) {
-            case 1: {
-                lifeAmount = ConstProperties.EASY_LIFE_AMOUNT;
-                break;
-            }
-            case 2: {
-                lifeAmount = ConstProperties.MEDIUM_LIFE_AMOUNT;
-                break;
-            }
-            case 3: {
-                lifeAmount = ConstProperties.HARD_LIFE_AMOUNT;
-            }
-        }
 
         pointsTextView.setText("Points: " + pointsAmount);
         lifeTextView.setText("Life: " + lifeAmount);
@@ -107,6 +106,9 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 finnishGame(false);
+                if(userSettings.getCurrentLevel() == 2) {
+                    elementSwitchTimer.cancel();
+                }
             }
         }.start();
     }
@@ -124,42 +126,105 @@ public class GameActivity extends AppCompatActivity {
         return String.valueOf(timeMessage);
     }
 
-
     //TODO:
     //1. Generate 10-15 random items from wanted list.
     private void loadTable() {
-        final ArrayList<ElementTableBlock> tableBlocks = new ArrayList<>();
-        final ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
+        final ArrayList<TableElementBlock> tableBlocks = new ArrayList<>();
+        final ArrayList<BankTableBlock> bankBlocks;
         ElementCollection collection = new ElementCollection();
-        int bankAmount = 10;
-        int rndAmount = 0;
-        Random rand = new Random();
         for(Element element : collection.getElements().values()) {
-            ElementTableBlock block = new ElementTableBlock(element, collection.getColorMap().get(element.colorGroup));
-            if(rand.nextInt(3) == 1 && rndAmount < bankAmount && (element.atomicNumber != 71 && element.atomicNumber != 103)) {
-                rndAmount++;
-                BankTableBlock bank = new BankTableBlock(element.symbol);
-                bank.setRow(9);
-                bank.setCol(rndAmount);
-                bank.setColor(collection.getColorMap().get(element.colorGroup));
-                bankBlocks.add(bank);
-                block.setVisibility(false);
-            }
-
+            TableElementBlock block = new TableElementBlock(element, collection.getColorMap().get(element.colorGroup));
             tableBlocks.add(block);
+        }
+
+        switch (userSettings.getCurrentLevel()) {
+            case 1: {
+                bankBlocks = prepareStage1(new ArrayList<>(tableBlocks), collection);
+                break;
+            }
+            case 2: {
+                bankBlocks = prepareStage2(tableBlocks, collection);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("number not exist");
         }
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
 
-        tableView.initializeTable(tableBlocks, metrics.widthPixels, metrics.heightPixels, bankBlocks);
+        tableView.initializeTable(tableBlocks, metrics.widthPixels, metrics.heightPixels, bankBlocks, userSettings.getCurrentLevel());
         setTableListeners();
+    }
+
+    private ArrayList<BankTableBlock> prepareStage2(ArrayList<TableElementBlock> tableElements, ElementCollection collection) {
+        ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
+        int bankAmount = ConstProperties.COLOR_GROUPS_BY_DIFFICULTY_LEVEL2[userSettings.getDifficulty() - 1];
+
+        ArrayList<Integer> colorsID = new ArrayList<>(collection.getColorMap().keySet());
+        colorsID.remove(0);
+        Collections.shuffle(colorsID);
+
+        for(int i = 0; i < bankAmount; i++) {
+            BankTableBlock bank = new BankTableBlock(ConstProperties.ELEMENTS_FAMILY_NAMES[colorsID.get(i)]);
+            bank.setRow(9);
+            bank.setCol(i);
+            bank.setColor(collection.getColorMap().get(colorsID.get(i)));
+            bank.setColorGroup(colorsID.get(i));
+            bankBlocks.add(bank);
+        }
+
+        for(TableElementBlock block : tableElements) {
+            block.setColor(ConstProperties.GENERIC_COLOR);
+            block.setVisibility(false);
+        }
+
+        initiateElementsPopup(new ArrayList<>(bankBlocks), collection);
+
+        return bankBlocks;
+    }
+
+    private ArrayList<BankTableBlock> prepareStage1(ArrayList<TableElementBlock> blockElements, ElementCollection collection){
+        Random rand = new Random();
+        ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
+        int bankAmount = ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
+        int rndAmount = 0;
+
+        Collections.shuffle(blockElements);
+
+        for(TableElementBlock block : blockElements) {
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) && rand.nextInt(2) == 1 &&
+                    collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) {
+
+                rndAmount++;
+                BankTableBlock bank = new BankTableBlock(block.getElementSymbol());
+                bank.setRow(9);
+                bank.setCol(rndAmount);
+
+                if(userSettings.getDifficulty() == 1) {
+                    bank.setColor(block.getColor());
+                    bank.setAtomicNumber(block.getBlockAtomicNumber());
+                } else if(userSettings.getDifficulty() == 2) {
+                    bank.setColor(block.getColor());
+                }
+
+                bankBlocks.add(bank);
+
+                block.setVisibility(false);
+            }
+
+            if(rndAmount == bankAmount) {
+                break;
+            }
+        }
+
+        return bankBlocks;
     }
 
     //TODO:
     //1. Set strings in file
     private void setTableListeners() {
-        tableView.setTableListeners(new PeriodicTableView.TableStateListeners() {
+        tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
             @Override
             public void onCorrectElementPlaced() {
                 pointsAmount ++;
@@ -183,10 +248,31 @@ public class GameActivity extends AppCompatActivity {
                 finnishGame(true);
             }
         });
+
+        if(userSettings.getCurrentLevel() == 2) {
+            tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
+                @Override
+                public void onCorrectElementPlaced() {
+                    elementSwitchTimer.onFinish();
+                    tableView.setTableEnabled(false);
+                }
+
+                @Override
+                public void onWrongElementPlaced() {
+                    elementSwitchTimer.onFinish();
+                    tableView.setTableEnabled(false);
+                }
+
+                @Override
+                public void onTableCompleted() {
+                    elementSwitchTimer.cancel();
+                }
+            });
+        }
     }
 
     private void finnishGame(boolean victorious) {
-        tableView.stopTableProcessing();
+        tableView.setTableEnabled(false);
         timer.cancel();
         int currentLevel = userSettings.getCurrentLevel();
         if (!victorious) {
@@ -195,13 +281,12 @@ public class GameActivity extends AppCompatActivity {
             showWinningDialog();
             currentLevel++;
             userSettings.setCurrentStage(currentLevel);
-            saveInstanceInPrefrences();
-        }
-
-        if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
-            startNewGame();
-        } else {
-            //show score board;
+            saveInstanceInPreferences();
+            if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
+                startNewGame();
+            } else {
+                //show score board;
+            }
         }
     }
 
@@ -215,6 +300,7 @@ public class GameActivity extends AppCompatActivity {
 
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> startNewGame());
         dialogBuilder.setNegativeButton("No", (dialog, which) -> finish());
+        dialogBuilder.setOnCancelListener(dialog -> finish());
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
     }
@@ -233,13 +319,13 @@ public class GameActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        Objects.requireNonNull(getSupportActionBar()).hide();
+        getSupportActionBar().hide();
     }
 
     private void showInstructions() {
         instructionsTextView.setVisibility(View.VISIBLE);
         instructionsTextView.setText(getInstructionsForTextView());
-        tableView.stopTableProcessing();
+        tableView.setTableEnabled(false);
         CountDownTimer timer = new CountDownTimer(35 * 100, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -248,46 +334,14 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 instructionsTextView.setVisibility(View.GONE);
-                initializeAndStartTimer(getTimerMinutes(), getTimerSeconds());
-                tableView.startTableProcessing();
+                initializeAndStartTimer(ConstProperties.TIME_MINUTES_BY_DIFFICULTY[userSettings.getDifficulty() - 1],ConstProperties.TIME_SECONDS_BY_DIFFICULTY[userSettings.getDifficulty() - 1]);
+                tableView.setTableEnabled(true);
+                if(userSettings.getCurrentLevel() == 2) {
+                    elementSwitchTimer.start();
+                }
             }
         }.start();
     }
-
-    private int getTimerMinutes() {
-        int minutes = 0;
-        switch (userSettings.getDifficulty()) {
-            case 1: {
-                minutes = ConstProperties.EASY_TIME_MINUTES;
-                break;
-            }
-            case 2: {
-                minutes = ConstProperties.MEDIUM_TIME_MINUTES;
-                break;
-            }
-            case 3: {
-                minutes = ConstProperties.HARD_TIME_MINUTES;
-            }
-        }
-        return minutes;
-    }
-
-    private int getTimerSeconds() {
-        int seconds = 0;
-        switch (userSettings.getDifficulty()) {
-            case 1: {
-                seconds = ConstProperties.EASY_TIME_SECONDS;
-                break;
-            }
-            case 2: {
-                seconds = ConstProperties.MEDIUM_TIME_SECONDS;
-                break;
-            }
-            case 3: {
-                seconds = ConstProperties.HARD_TIME_SECONDS;
-            }
-        }
-        return seconds;    }
 
     private String getInstructionsForTextView() {
         String instructions = "";
@@ -309,8 +363,45 @@ public class GameActivity extends AppCompatActivity {
         return instructions;
     }
 
-    private void saveInstanceInPrefrences() {
-        getSharedPreferences(ConstProperties.USER_SETTINGS_MSG, MODE_PRIVATE).edit().putInt(ConstProperties.CURRENT_LEVEL_MSG, userSettings.getCurrentLevel())
-                .putInt(ConstProperties.CURRENT_DIFFICULTY_MSG, userSettings.getDifficulty()).apply();
+    private void saveInstanceInPreferences() {
+        SharedPreferences prefs = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putInt(ConstProperties.CURRENT_LEVEL_MSG, userSettings.getCurrentLevel())
+                .putInt(ConstProperties.CURRENT_DIFFICULTY_MSG, userSettings.getDifficulty());
+
+        if(prefs.getInt(ConstProperties.MAX_ALLOWED_LEVEL_MSG, 1) < userSettings.getCurrentLevel()) {
+            prefsEditor.putInt(ConstProperties.MAX_ALLOWED_LEVEL_MSG, userSettings.getCurrentLevel());
+        }
+
+        prefsEditor.apply();
+    }
+
+    private void initiateElementsPopup(ArrayList<BankTableBlock> bankBlocks, ElementCollection collection) {
+
+        ArrayList<Element> selectedElements = (ArrayList<Element>)collection.getElements().values().stream()
+                .filter(e -> bankBlocks.stream()
+                .anyMatch(b -> b.getName().equals(e.familyName))).collect(Collectors.toList());
+
+        elementSwitchTimer = new CountDownTimer(15000, 15000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tableView.setIncreasedElement(selectedElements.get(0).symbol, true);
+                tableView.setTableEnabled(true);
+            }
+
+            @Override
+            public void onFinish() {
+                tableView.setIncreasedElement(selectedElements.get(0).symbol, false);
+                selectedElements.remove(0);
+                if(selectedElements.size() == 0) {
+                    elementSwitchTimer.cancel();
+                    finnishGame(true);
+                } else {
+                    Collections.shuffle(selectedElements);
+                    tableView.setTableEnabled(true);
+                    elementSwitchTimer.start();
+                }
+            }
+        };
     }
 }
