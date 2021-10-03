@@ -3,6 +3,7 @@ package com.idanandben.finalapplicationproject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
@@ -24,8 +25,10 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity {
 
     private PeriodicTableView tableView;
-
+    private MediaPlayer timeout,wrong;
     private UserSettings userSettings;
+
+    private MainActivity md;
 
     private TextView timeLeftTextView;
     private TextView pointsTextView;
@@ -46,7 +49,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         hideSystemUI();
         setContentView(R.layout.activity_game);
-
+       // md.onResume();
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
         tableView = findViewById(R.id.tableView);
         instructionsTextView = findViewById(R.id.instruction_label);
@@ -166,6 +169,9 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onWrongElementPlaced() {
                 lifeAmount --;
+
+                wrong = MediaPlayer.create(getApplicationContext(), R.raw.wrongtune);
+                wrong.start();
                 lifeTextView.setText("Life: " + lifeAmount);
                 if(lifeAmount <= 0 ) {
                     finnishGame(false);

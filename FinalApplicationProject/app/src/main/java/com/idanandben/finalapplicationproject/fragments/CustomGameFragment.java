@@ -3,6 +3,7 @@ package com.idanandben.finalapplicationproject.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -49,7 +50,6 @@ public class CustomGameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.new_custom_game_fragment, container, false);
         levelsLayout = fragmentView.findViewById(R.id.levels_layout);
-
         maxAllowedLevel = preferences.getInt(ConstProperties.MAX_ALLOWED_LEVEL_MSG, 1);
         addButtons();
 
@@ -65,7 +65,9 @@ public class CustomGameFragment extends Fragment {
 
             levelButton = new MaterialButton(getActivity());
             params.setMargins(20, 10, 20, 10);
+
             levelButton.setLayoutParams(params);
+            levelButton.setBackground(this.getResources().getDrawable(R.drawable.hexagon));
 
             if (i <= maxAllowedLevel) {
                 levelButton.setText(String.valueOf(i));

@@ -1,5 +1,6 @@
 package com.idanandben.finalapplicationproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +14,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -42,7 +45,31 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu); //your file name
+        return super.onCreateOptionsMenu(menu);    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.about:
+                //your code
+                // EX : call intent if you want to swich to other activity
+                return true;
+            case R.id.music:
+                if (mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                }
+                else{
+                    mediaPlayer.start();
+
+
+                }
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void showMainMenu() {
@@ -99,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Exit");
         dialogBuilder.setMessage("Are you sure you want to exit?");
-
+        mediaPlayer.pause();
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> finish());
         dialogBuilder.setNegativeButton("No", null);
 
@@ -131,5 +158,19 @@ public class MainActivity extends AppCompatActivity {
         }
         // below line is use to display a toast message.
         Toast.makeText(this, "Audio started playing..", Toast.LENGTH_SHORT).show();
+    }
+
+    /*@Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        mediaPlayer.stop();
+    }*/
+
+    @Override
+    protected void onResume() {
+        if(mediaPlayer != null && !mediaPlayer.isPlaying())
+            mediaPlayer.start();
+        super.onResume();
     }
 }

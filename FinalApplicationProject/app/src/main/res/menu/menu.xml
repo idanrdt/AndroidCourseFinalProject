@@ -7,7 +7,7 @@
         app:showAsAction="always"/>
     <item
         android:title="@string/music"
-        android:id="@+id/help"
+        android:id="@+id/music"
         android:icon="@drawable/ic_baseline_music_off_24"
         app:showAsAction="always"/>
 </menu>
