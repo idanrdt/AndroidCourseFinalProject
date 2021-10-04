@@ -6,6 +6,7 @@ public class ConstProperties {
     public static String CURRENT_LEVEL_MSG = "CurrentLevel";
     public static String CURRENT_DIFFICULTY_MSG = "CurrentDifficulty";
     public static String MAX_ALLOWED_LEVEL_MSG = "MaxAllowedLevel";
+    public static String SCORES = "Scores";
 
     public static String[] DIFFICULTIES = new String[] {"Easy", "Medium" ,"Hard"};
 
@@ -19,11 +20,6 @@ public class ConstProperties {
     public static int[] BLOCK_AMOUNT_BY_DIFFICULTY = new int[] {10, 15, 10};
     public static int[] COLOR_GROUPS_BY_DIFFICULTY_LEVEL2 = new int[] {3, 5, 8};
     public static int[] POINTS_MULTIPLIER_BY_DIFFICULTY = new int[] {1, 2, 5};
-
-
-    public static int EASY = 0;
-    public static int MEDIUM = 1;
-    public static int HARD = 2;
 
     public static int MAX_LEVEL_EXIST = 3;
     public static int GENERIC_COLOR = 0xFFFFFFFF;
