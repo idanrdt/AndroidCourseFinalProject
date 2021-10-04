@@ -3,6 +3,7 @@ package com.idanandben.finalapplicationproject;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,12 +20,9 @@ import com.idanandben.finalapplicationproject.widgets.BankTableBlock;
 import com.idanandben.finalapplicationproject.widgets.TableElementBlock;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GameActivity extends AppCompatActivity {
@@ -32,8 +30,6 @@ public class GameActivity extends AppCompatActivity {
     private PeriodicTableView tableView;
     private MediaPlayer timeout,wrong;
     private UserSettings userSettings;
-
-    private MainActivity md;
 
     private TextView timeLeftTextView;
     private TextView pointsTextView;
@@ -55,7 +51,6 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         hideSystemUI();
         setContentView(R.layout.activity_game);
-       // md.onResume();
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
         tableView = findViewById(R.id.tableView);
         instructionsTextView = findViewById(R.id.instruction_label);
@@ -285,9 +280,14 @@ public class GameActivity extends AppCompatActivity {
             if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
                 startNewGame();
             } else {
-                //show score board;
+                initializeScoreBoard();
             }
         }
+    }
+
+    private void initializeScoreBoard(){
+        Intent intent = new Intent(this, ScoreActivity.class);
+        startActivity(intent);
     }
 
     //TODO:
