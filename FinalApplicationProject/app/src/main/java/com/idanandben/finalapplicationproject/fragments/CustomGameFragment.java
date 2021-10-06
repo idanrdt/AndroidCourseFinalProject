@@ -3,7 +3,6 @@ package com.idanandben.finalapplicationproject.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.idanandben.finalapplicationproject.R;
+import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 
 public class CustomGameFragment extends Fragment {
@@ -42,6 +42,7 @@ public class CustomGameFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        BackgroundMusic.onResume();
         super.onCreate(savedInstanceState);
         preferences = getActivity().getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
     }

@@ -1,46 +1,38 @@
 package com.idanandben.finalapplicationproject;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Bundle;
-import android.view.Display;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.OrientationEventListener;
-import android.view.WindowManager;
-import android.widget.Toast;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
+import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        playAudio();
+       /* if(BackgroundMusic.isPlaying()){
+            BackgroundMusic.onDestroy();
+        }*/
+        BackgroundMusic.onStart(this,"start");
         showMainMenu();
+
     }
 
     @Override
@@ -58,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.music:
                 if (mediaPlayer.isPlaying()){
-                    mediaPlayer.pause();
+                   // mServ.resumeMusic();
+                    //mServ.stopMusic();
+                   // mediaPlayer.pause();
                 }
                 else{
-                    mediaPlayer.start();
+                    //mediaPlayer.start();
 
 
                 }
@@ -126,51 +120,27 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Exit");
         dialogBuilder.setMessage("Are you sure you want to exit?");
-        mediaPlayer.pause();
+        //mediaPlayer.pause();
+        onDestroy();
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> finish());
         dialogBuilder.setNegativeButton("No", null);
-
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
     }
-    private void playAudio() {
 
-        String audioUrl = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-
-        // initializing media player
-        mediaPlayer = new MediaPlayer();
-
-        // below line is use to set the audio
-        // stream type for our media player.
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-        // below line is use to set our
-        // url to our media player.
-        try {
-            mediaPlayer.setDataSource(audioUrl);
-            // below line is use to prepare
-            // and start our media player.
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // below line is use to display a toast message.
-        Toast.makeText(this, "Audio started playing..", Toast.LENGTH_SHORT).show();
-    }
-
-    /*@Override
+    @Override
     protected void onPause() {
-        // TODO Auto-generated method stub
         super.onPause();
-        mediaPlayer.stop();
-    }*/
+        if (!hasWindowFocus() ) {
+            BackgroundMusic.onPause();
+        }
+
+    }
 
     @Override
     protected void onResume() {
-        if(mediaPlayer != null && !mediaPlayer.isPlaying())
-            mediaPlayer.start();
         super.onResume();
+        onWindowFocusChanged(hasWindowFocus());
+        BackgroundMusic.onResume();
     }
 }

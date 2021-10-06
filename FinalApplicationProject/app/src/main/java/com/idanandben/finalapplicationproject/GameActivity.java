@@ -1,24 +1,25 @@
 package com.idanandben.finalapplicationproject;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 import com.idanandben.finalapplicationproject.utilities.Element;
 import com.idanandben.finalapplicationproject.utilities.ElementCollection;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
 import com.idanandben.finalapplicationproject.widgets.BankTableBlock;
-import com.idanandben.finalapplicationproject.widgets.TableElementBlock;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
+import com.idanandben.finalapplicationproject.widgets.TableElementBlock;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +50,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BackgroundMusic.onResume();
         hideSystemUI();
         setContentView(R.layout.activity_game);
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
@@ -66,6 +68,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void startNewGame() {
+        BackgroundMusic.onRestart(this);
         hideSystemUI();
         loadTable();
         resetPointsAndLife();
@@ -115,6 +118,10 @@ public class GameActivity extends AppCompatActivity {
         timeMessage.append("Time Left: 0");
         timeMessage.append(minutes).append(":");
         if(seconds < 10) {
+            if(minutes==0) {
+                BackgroundMusic.onDestroy();
+                BackgroundMusic.onStart(this, "time");
+            }
             timeMessage.append("0");
         }
         timeMessage.append(seconds);
@@ -299,7 +306,7 @@ public class GameActivity extends AppCompatActivity {
         dialogBuilder.setMessage("Play again?");
 
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> startNewGame());
-        dialogBuilder.setNegativeButton("No", (dialog, which) -> finish());
+        dialogBuilder.setNegativeButton("No", (dialog, which) -> initializeScoreBoard());
         dialogBuilder.setOnCancelListener(dialog -> finish());
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
@@ -404,4 +411,5 @@ public class GameActivity extends AppCompatActivity {
             }
         };
     }
+
 }
