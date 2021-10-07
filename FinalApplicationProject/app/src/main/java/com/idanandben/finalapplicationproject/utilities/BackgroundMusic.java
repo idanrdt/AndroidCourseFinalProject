@@ -12,6 +12,7 @@ public class BackgroundMusic  {
     public static void onStart(Context context,String name){
         onDestroy();
         if(!muted){
+
             if(name.equals("start")){
                 player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
                 player.setLooping(true);

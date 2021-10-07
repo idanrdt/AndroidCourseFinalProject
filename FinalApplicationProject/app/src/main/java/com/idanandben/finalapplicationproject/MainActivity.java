@@ -1,11 +1,12 @@
 package com.idanandben.finalapplicationproject;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RatingBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,14 +20,10 @@ import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MediaPlayer mediaPlayer;
     //uiux - main screen-Ben
-    //add leaderboard to main screen-B
-    //about - change to icon and add dialog-Ben
     //leaderboard->resetscore->confirmation
     //music - change string to enum
     //level 3 - idan
-    //add victory music-ben
     //add dialog between levels
     //change colors
     //add translation
@@ -35,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     //think about timer trail
     //PPT-idan&ben
     //poster-idan
+    private RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.about:
                 //your code
-                // EX : call intent if you want to swich to other activity
+                Toast.makeText(MainActivity.this,"powered by Ben Machlev& Idan Arditi",Toast.LENGTH_LONG).show();
+                 return true;
+            case R.id.rateusmenu:
+                RateingDialog();
                 return true;
             case R.id.music:
                 BackgroundMusic.changeMuteState();
@@ -83,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCustomGameButtonClicked() {
                 startCustomGame();
             }
+            @Override
+            public void onleaderboardClicked(){leaderboard();}
+
         });
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
@@ -111,6 +115,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
                 .add(R.id.fragment_container, customGameFragment).addToBackStack(null).commit();
     }
+    private void leaderboard(){
+        Intent intent = new Intent(this, ScoreActivity.class);
+        startActivity(intent);
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -125,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Exit");
         dialogBuilder.setMessage("Are you sure you want to exit?");
-        //mediaPlayer.pause();
         onDestroy();
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> finish());
         dialogBuilder.setNegativeButton("No", null);
@@ -133,7 +141,30 @@ public class MainActivity extends AppCompatActivity {
         endDialog.show();
     }
 
+    private void RateingDialog(){
+        RatingBar ratingBar=findViewById(R.id.ratingbar);
+        AlertDialog.Builder builderdialograte=new AlertDialog.Builder(this);
+        builderdialograte.setTitle("Rate us");
+        builderdialograte.setMessage("rate us please");
+        /*ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {/*
+                String message=null;
+                if(rating<3.5){
+                    message="sorry to hear that";
+                }
+                else{
+                    message="thank you!";
+                }
+                Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
+        builderdialograte.setPositiveButton("Done",null);
+        builderdialograte.setNegativeButton("return", null);
+        AlertDialog endDialog = builderdialograte.create();
+        endDialog.show();
+    }
     @Override
     protected void onPause() {
         super.onPause();

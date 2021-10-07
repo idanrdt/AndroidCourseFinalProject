@@ -285,8 +285,13 @@ public class GameActivity extends AppCompatActivity {
         timer.cancel();
         int currentLevel = userSettings.getCurrentLevel();
         if (!victorious) {
+            wrong=MediaPlayer.create(this,R.raw.lose);
+            wrong.start();
+            //BackgroundMusic.onStart(this,"loser");
             showLossDialog();
         } else {
+            wrong=MediaPlayer.create(this,R.raw.victory);
+            wrong.start();
             showWinningDialog();
             currentLevel++;
             userSettings.setCurrentStage(currentLevel);
