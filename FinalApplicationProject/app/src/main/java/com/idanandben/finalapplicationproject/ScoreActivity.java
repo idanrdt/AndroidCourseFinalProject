@@ -37,23 +37,6 @@ public class ScoreActivity extends AppCompatActivity {
         userScores.add("Ben 500");
         userScores.add("Ben 9000");
         userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");userScores.add("Ben 9000");
-        userScores.add("Ben 1");
-        userScores.add("Ben 75");
         Map<Integer, String> playersScore = new TreeMap<>(Collections.reverseOrder());
         for (String userScore : userScores) {
             String playerName = userScore.substring(0, userScore.indexOf(" "));
@@ -64,14 +47,12 @@ public class ScoreActivity extends AppCompatActivity {
         List<Integer> scores = new ArrayList<>(playersScore.keySet());
 
         RecyclerView recyclerView = findViewById(R.id.leader);
-        recyclerView.setHasFixedSize(true);
-        ScoreViewAdapter adapter=new ScoreViewAdapter(scores,players);
+
+        ScoreViewAdapter adapter=new ScoreViewAdapter(scores, players);
         recyclerView.setAdapter(adapter);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
-        adapter.notifyDataSetChanged();
-
     }
 }
 

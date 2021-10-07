@@ -12,11 +12,12 @@ import com.idanandben.finalapplicationproject.R;
 import java.util.List;
 
 public class ScoreViewAdapter extends RecyclerView.Adapter<ScoreViewAdapter.RecyclerViewHolder>{
-    private  List<String> namesplayer;
-    private List<Integer> scoresplayers;
-    public ScoreViewAdapter(List<Integer> scoresplayers, List<String> namesplayer) {
-        this.scoresplayers=scoresplayers;
-        this.namesplayer=namesplayer;
+    private final List<String> playerNames;
+    private final List<Integer> playerScores;
+
+    public ScoreViewAdapter(List<Integer> playerScores, List<String> playerNames) {
+        this.playerScores = playerScores;
+        this.playerNames = playerNames;
     }
 
     @Override
@@ -30,14 +31,14 @@ public class ScoreViewAdapter extends RecyclerView.Adapter<ScoreViewAdapter.Recy
 
     @Override
     public void onBindViewHolder(ScoreViewAdapter.RecyclerViewHolder holder, int position) {
-        holder.name.setText(namesplayer.get(position));
-        holder.score.setText(scoresplayers.get(position));
+        holder.name.setText(playerNames.get(position));
+        holder.score.setText(String.valueOf(playerScores.get(position)));
 
     }
 
     @Override
     public int getItemCount() {
-        return namesplayer.size();
+        return playerNames.size();
 
     }
 
