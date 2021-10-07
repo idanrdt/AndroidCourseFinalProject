@@ -1,8 +1,6 @@
 package com.idanandben.finalapplicationproject;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,23 +15,32 @@ import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
 import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
-import com.idanandben.finalapplicationproject.utilities.ScreenReciver;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
-
-
+    //uiux - main screen-Ben
+    //add leaderboard to main screen-B
+    //about - change to icon and add dialog-Ben
+    //leaderboard->resetscore->confirmation
+    //music - change string to enum
+    //level 3 - idan
+    //add victory music-ben
+    //add dialog between levels
+    //change colors
+    //add translation
+    //add instructions(VISAULIATY&TEXT)
+    //add gifs
+    //think about timer trail
+    //PPT-idan&ben
+    //poster-idan
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BroadcastReceiver screen=new ScreenReciver();
-        IntentFilter filter= new IntentFilter(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        this.registerReceiver(screen, filter);
+
         BackgroundMusic.onStart(this,"start");
         showMainMenu();
 
@@ -130,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!hasWindowFocus() || !ScreenReciver.getscreenstate()) {
+        if (!hasWindowFocus()) {
             BackgroundMusic.onPause();
         }
     }

@@ -14,11 +14,11 @@ public class BackgroundMusic  {
         if(!muted){
             if(name.equals("start")){
                 player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
+                player.setLooping(true);
             }
             else if(name.equals("time")) {
                 player=MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
             }
-            player.setLooping(true);
             player.start();
         }
     }
