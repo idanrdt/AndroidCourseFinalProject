@@ -50,7 +50,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BackgroundMusic.onResume();
+
         hideSystemUI();
         setContentView(R.layout.activity_game);
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
@@ -410,6 +410,22 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!hasWindowFocus() ) {
+            BackgroundMusic.onPause();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onWindowFocusChanged(hasWindowFocus());
+        BackgroundMusic.onResume();
     }
 
 }

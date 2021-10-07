@@ -49,14 +49,11 @@ public class MainActivity extends AppCompatActivity {
                 // EX : call intent if you want to swich to other activity
                 return true;
             case R.id.music:
-                if (mediaPlayer.isPlaying()){
-                   // mServ.resumeMusic();
-                    //mServ.stopMusic();
-                   // mediaPlayer.pause();
+                if (BackgroundMusic.isPlaying()){
+                   BackgroundMusic.onPause();
                 }
                 else{
-                    //mediaPlayer.start();
-
+                    BackgroundMusic.onResume();
 
                 }
 
