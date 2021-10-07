@@ -7,17 +7,20 @@ import com.idanandben.finalapplicationproject.R;
 
 public class BackgroundMusic  {
     static MediaPlayer player;
+    private static boolean muted=false;
 
     public static void onStart(Context context,String name){
-        if(name.equals("start")){
-        player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
+        onDestroy();
+        if(!muted){
+            if(name.equals("start")){
+                player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
+            }
+            else if(name.equals("time")) {
+                player=MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
+            }
+            player.setLooping(true);
+            player.start();
         }
-        else if(name.equals("time")) {
-            player=MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
-
-        }
-        player.setLooping(true);
-        player.start();
     }
 
     public static void onStop() {
@@ -40,6 +43,19 @@ public class BackgroundMusic  {
                 player = null;
             }
         }
+    }
+
+    public static void changeMuteState(){
+        if(!muted) {
+            muted = true;
+            onDestroy();
+        }
+        else {
+            muted=false;
+        }
+    }
+    public static boolean isMuted(){
+        return muted;
     }
     public static void onRestart(Context context)
     {

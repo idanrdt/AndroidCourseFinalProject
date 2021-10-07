@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.preference.Preference;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.TextView;
@@ -76,7 +75,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void startNewGame() {
-        BackgroundMusic.onRestart(this);
+        BackgroundMusic.onStart(this,"start");
         hideSystemUI();
         loadTable();
         resetPointsAndLife();
@@ -127,7 +126,6 @@ public class GameActivity extends AppCompatActivity {
         timeMessage.append(minutes).append(":");
         if(seconds < 10) {
             if(minutes==0) {
-                BackgroundMusic.onDestroy();
                 BackgroundMusic.onStart(this, "time");
             }
             timeMessage.append("0");
@@ -244,9 +242,10 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onWrongElementPlaced() {
                 lifeAmount --;
-
-                wrong = MediaPlayer.create(getApplicationContext(), R.raw.wrongtune);
-                wrong.start();
+                if(!BackgroundMusic.isMuted()){
+                    wrong = MediaPlayer.create(getApplicationContext(), R.raw.wrongtune);
+                    wrong.start();
+                }
                 lifeTextView.setText("Life: " + lifeAmount);
                 if(lifeAmount <= 0 ) {
                     finnishGame(false);
@@ -441,16 +440,10 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!hasWindowFocus() ) {
+        if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
             BackgroundMusic.onPause();
+            finish();
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        onWindowFocusChanged(hasWindowFocus());
-        BackgroundMusic.onResume();
     }
 }

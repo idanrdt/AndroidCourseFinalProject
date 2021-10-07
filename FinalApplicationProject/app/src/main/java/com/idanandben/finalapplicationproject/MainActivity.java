@@ -1,6 +1,8 @@
 package com.idanandben.finalapplicationproject;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +17,7 @@ import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
 import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
+import com.idanandben.finalapplicationproject.utilities.ScreenReciver;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,9 +30,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       /* if(BackgroundMusic.isPlaying()){
-            BackgroundMusic.onDestroy();
-        }*/
+        BroadcastReceiver screen=new ScreenReciver();
+        IntentFilter filter= new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        this.registerReceiver(screen, filter);
         BackgroundMusic.onStart(this,"start");
         showMainMenu();
 
@@ -49,12 +53,9 @@ public class MainActivity extends AppCompatActivity {
                 // EX : call intent if you want to swich to other activity
                 return true;
             case R.id.music:
-                if (BackgroundMusic.isPlaying()){
-                   BackgroundMusic.onPause();
-                }
-                else{
-                    BackgroundMusic.onResume();
-
+                BackgroundMusic.changeMuteState();
+                if(!BackgroundMusic.isPlaying()) {
+                    BackgroundMusic.onStart(this,"start");
                 }
 
                 return true;
@@ -125,10 +126,11 @@ public class MainActivity extends AppCompatActivity {
         endDialog.show();
     }
 
+
     @Override
     protected void onPause() {
         super.onPause();
-        if (hasWindowFocus() ) {
+        if (!hasWindowFocus() || !ScreenReciver.getscreenstate()) {
             BackgroundMusic.onPause();
         }
     }
