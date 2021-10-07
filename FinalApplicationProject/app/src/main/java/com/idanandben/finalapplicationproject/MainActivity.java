@@ -128,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!hasWindowFocus() ) {
+        if (hasWindowFocus() ) {
             BackgroundMusic.onPause();
         }
-
     }
 
     @Override

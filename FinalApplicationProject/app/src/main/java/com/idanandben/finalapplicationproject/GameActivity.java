@@ -321,6 +321,7 @@ public class GameActivity extends AppCompatActivity {
     private void initializeScoreBoard(){
         Intent intent = new Intent(this, ScoreActivity.class);
         startActivity(intent);
+        finish();
     }
 
     //TODO:
@@ -452,5 +453,4 @@ public class GameActivity extends AppCompatActivity {
         onWindowFocusChanged(hasWindowFocus());
         BackgroundMusic.onResume();
     }
-
 }

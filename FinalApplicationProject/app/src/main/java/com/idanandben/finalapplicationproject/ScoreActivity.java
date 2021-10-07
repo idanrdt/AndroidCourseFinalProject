@@ -47,6 +47,11 @@ public class ScoreActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }
 
 
