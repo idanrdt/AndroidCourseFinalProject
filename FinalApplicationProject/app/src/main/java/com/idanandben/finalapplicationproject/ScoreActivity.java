@@ -21,22 +21,15 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class ScoreActivity extends AppCompatActivity {
-    private ArrayList<String> itemsList = new ArrayList<>();
-    private ListView listView;
-    private Set<String> userScores;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
         SharedPreferences preferences = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
-        //userScores = preferences.getStringSet(ConstProperties.SCORES, new HashSet<>());
-        userScores = new HashSet<String>();
-        userScores.add("idan 100");
-        userScores.add("Ben 4500");
-        userScores.add("Ben 500");
-        userScores.add("Ben 9000");
-        userScores.add("Ben 1");
+        Set<String> userScores = preferences.getStringSet(ConstProperties.SCORES, new HashSet<>());
+
         Map<Integer, String> playersScore = new TreeMap<>(Collections.reverseOrder());
         for (String userScore : userScores) {
             String playerName = userScore.substring(0, userScore.indexOf(" "));

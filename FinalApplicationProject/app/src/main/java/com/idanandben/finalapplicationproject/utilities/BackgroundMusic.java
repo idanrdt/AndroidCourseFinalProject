@@ -48,9 +48,6 @@ public class BackgroundMusic  {
     }
     public static boolean isPlaying()
     {
-        if(player.isPlaying()&&player!=null ) {
-            return true;
-        }
-        return false;
+        return player != null && player.isPlaying();
     }
 }

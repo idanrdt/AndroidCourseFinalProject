@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.Preference;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.TextView;
@@ -18,19 +19,24 @@ import com.idanandben.finalapplicationproject.utilities.Element;
 import com.idanandben.finalapplicationproject.utilities.ElementCollection;
 import com.idanandben.finalapplicationproject.utilities.UserSettings;
 import com.idanandben.finalapplicationproject.widgets.BankTableBlock;
+import com.idanandben.finalapplicationproject.widgets.NameInsertDialog;
 import com.idanandben.finalapplicationproject.widgets.PeriodicTableView;
 import com.idanandben.finalapplicationproject.widgets.TableElementBlock;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GameActivity extends AppCompatActivity {
 
     private PeriodicTableView tableView;
-    private MediaPlayer timeout,wrong;
+    private MediaPlayer wrong;
     private UserSettings userSettings;
+
+    private SharedPreferences prefs;
 
     private TextView timeLeftTextView;
     private TextView pointsTextView;
@@ -56,6 +62,8 @@ public class GameActivity extends AppCompatActivity {
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
         tableView = findViewById(R.id.tableView);
         instructionsTextView = findViewById(R.id.instruction_label);
+
+        prefs = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, MODE_PRIVATE);
 
         saveInstanceInPreferences();
 
@@ -284,12 +292,30 @@ public class GameActivity extends AppCompatActivity {
             currentLevel++;
             userSettings.setCurrentStage(currentLevel);
             saveInstanceInPreferences();
-            if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
+            if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST - 1) {
                 startNewGame();
             } else {
-                initializeScoreBoard();
+                showNameInsertDialog();
             }
         }
+    }
+
+    private void showNameInsertDialog(){
+        NameInsertDialog dialog = new NameInsertDialog(this);
+        SharedPreferences.Editor edit = prefs.edit();
+        Set<String> scores = new HashSet<>(prefs.getStringSet(ConstProperties.SCORES, new HashSet<>()));
+
+        dialog.setDoneButtonListener(name -> {
+            String nameScoreBuilder = name +
+                    " " +
+                    userSettings.getScore();
+            scores.add(nameScoreBuilder);
+            edit.putStringSet(ConstProperties.SCORES, scores).apply();
+            initializeScoreBoard();
+        });
+
+        dialog.setCancelButtonListener(() -> initializeScoreBoard ());
+        dialog.show();
     }
 
     private void initializeScoreBoard(){
@@ -371,7 +397,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void saveInstanceInPreferences() {
-        SharedPreferences prefs = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.putInt(ConstProperties.CURRENT_LEVEL_MSG, userSettings.getCurrentLevel())
                 .putInt(ConstProperties.CURRENT_DIFFICULTY_MSG, userSettings.getDifficulty());
