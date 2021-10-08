@@ -245,12 +245,10 @@ public class GameActivity extends AppCompatActivity {
                     bank.setCol(rndAmount - 8);
                 }
 
-
                 if(userSettings.getDifficulty() == 1) {
                     bank.setColor(block.getColor());
-                    bank.setAtomicNumber(block.getBlockAtomicNumber());
-                } else if(userSettings.getDifficulty() == 2) {
-                    bank.setColor(block.getColor());
+                } else {
+                    bank.setColor(ConstProperties.GENERIC_COLOR);
                 }
 
                 bankBlocks.add(bank);
@@ -357,11 +355,11 @@ public class GameActivity extends AppCompatActivity {
 
     private void showLossDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Game Over");
-        dialogBuilder.setMessage("Play again?");
+        dialogBuilder.setTitle(R.string.game_over_string);
+        dialogBuilder.setMessage(R.string.play_again_string);
 
-        dialogBuilder.setPositiveButton("Yes", (dialog, which) -> startNewGame());
-        dialogBuilder.setNegativeButton("No", (dialog, which) -> initializeScoreBoard());
+        dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> startNewGame());
+        dialogBuilder.setNegativeButton(R.string.no_string, (dialog, which) -> initializeScoreBoard());
         dialogBuilder.setOnCancelListener(dialog -> finish());
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();

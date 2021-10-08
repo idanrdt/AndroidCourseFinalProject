@@ -88,4 +88,12 @@
     <string name="element_Lv">Livermorium</string>
     <string name="element_Ts">Tennessine</string>
     <string name="element_Og">Oganesson</string>
+    <string name="yes_string">Yes</string>
+    <string name="no_string">No</string>
+    <string name="game_over_string">Game Over</string>
+    <string name="play_again_string">Play again?</string>
+    <string name="exit_string">Exit</string>
+    <string name="exit_confirmation">Are you sure you want to exit?</string>
+    <string name="clear_all_string">clear all</string>
+    <string name="clear_all_confirmation">Are you sure you want to clear board?</string>
 </resources>

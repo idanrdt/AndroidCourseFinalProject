@@ -139,13 +139,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void showExitDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setTitle("Exit");
-        dialogBuilder.setMessage("Are you sure you want to exit?");
-        dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+        dialogBuilder.setTitle(R.string.exit_string);
+        dialogBuilder.setMessage(R.string.exit_confirmation);
+        dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> {
             BackgroundMusic.stopAndDisposeBackgroundMusic();
             finish();
         });
-        dialogBuilder.setNegativeButton("No", null);
+        dialogBuilder.setNegativeButton(R.string.no_string, null);
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
     }

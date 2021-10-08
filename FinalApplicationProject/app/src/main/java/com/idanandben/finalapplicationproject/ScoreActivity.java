@@ -46,10 +46,10 @@ public class ScoreActivity extends AppCompatActivity {
 
         clearButton.setOnClickListener(v -> {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScoreActivity.this);
-            dialogBuilder.setTitle("clear all");
-            dialogBuilder.setMessage("Are you sure you want to clear board?");
-            dialogBuilder.setPositiveButton("Yes", (dialog, which) -> confirmDelete());
-            dialogBuilder.setNegativeButton("No", null);
+            dialogBuilder.setTitle(R.string.clear_all_string);
+            dialogBuilder.setMessage(R.string.clear_all_confirmation);
+            dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> confirmDelete());
+            dialogBuilder.setNegativeButton(R.string.no_string, null);
             AlertDialog endDialog = dialogBuilder.create();
             endDialog.show();
         });
@@ -75,17 +75,9 @@ public class ScoreActivity extends AppCompatActivity {
         prefsEditor.putStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>()).apply();
     }
 
-
-/*    @Override
+    @Override
     public void onBackPressed() {
         finish();
+        super.onBackPressed();
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
-            BackgroundMusic.pausePlayer();
-        }
-    }*/
 }

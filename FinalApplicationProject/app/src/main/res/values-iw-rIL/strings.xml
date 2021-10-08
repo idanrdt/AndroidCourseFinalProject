@@ -89,4 +89,12 @@
     <string name="element_Lv">ליברמוריום</string>
     <string name="element_Ts">טנסין</string>
     <string name="element_Og">אוגאנסון</string>
+    <string name="yes_string">כן</string>
+    <string name="no_string">לא</string>
+    <string name="game_over_string">המשחק נגמר</string>
+    <string name="play_again_string">לשחק שוב?</string>
+    <string name="exit_string">יציאה</string>
+    <string name="exit_confirmation">האם לצאת?</string>
+    <string name="clear_all_string">מחיקת הכל</string>
+    <string name="clear_all_confirmation">האם למחוק את הכל?</string>
 </resources>
