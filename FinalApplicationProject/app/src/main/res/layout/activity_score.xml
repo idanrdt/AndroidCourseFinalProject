@@ -8,42 +8,47 @@
     tools:context=".ScoreActivity"
     >
 
-    <Button
-        android:id="@+id/clearleader"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/leaderboard_recycler_view_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/leaderboard_button_clear_all" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/leaderboard_button_clear_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="clear"
-        app:layout_constraintEnd_toStartOf="@+id/scoreleader"
-        app:layout_constraintHorizontal_bias="0.787"
+        android:text="clearAll"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nameleader"
+        android:id="@+id/leaderboard_name_textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Names:"
+        app:layout_constraintBottom_toTopOf="@+id/leaderboard_recycler_view_table"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/scoreleader"
+        android:id="@+id/leaderboard_score_textview_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scores:"
+        app:layout_constraintBottom_toTopOf="@+id/leaderboard_recycler_view_table"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/leader"
+    <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_height="5dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/leaderboard_recycler_view_table" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

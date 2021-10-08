@@ -5,6 +5,7 @@ import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 public class BankTableBlock {
 
     private final String name;
+    private final String symbol;
     private String atomicNumber;
 
     private int color;
@@ -16,8 +17,9 @@ public class BankTableBlock {
     private int initializedLocationX = -1;
     private int initializedLocationY = -1;
 
-    public BankTableBlock(String name) {
+    public BankTableBlock(String name, String symbol) {
         this.name = name;
+        this.symbol = symbol;
         this.atomicNumber = "";
     }
 
@@ -68,6 +70,8 @@ public class BankTableBlock {
     public String getName() {
         return name;
     }
+
+    public String getSymbol() { return symbol; }
 
     public String getAtomicNumber() {
         return this.atomicNumber;

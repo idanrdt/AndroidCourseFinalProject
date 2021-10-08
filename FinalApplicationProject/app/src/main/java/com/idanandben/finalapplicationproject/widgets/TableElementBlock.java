@@ -82,4 +82,6 @@ public class TableElementBlock {
     public String getElementSymbol() {
         return this.element.symbol;
     }
+
+    public String getElementName() { return this.element.name; }
 }

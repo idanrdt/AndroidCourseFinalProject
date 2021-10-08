@@ -47,11 +47,6 @@ public class GameActivity extends AppCompatActivity {
     private int pointsAmount;
     private int lifeAmount;
 
-    //TODO:
-    //1. Get Settings from intent (level, life points, time).
-    //2. Add time icon.
-    //3. Add life icon.
-    //4. Add level title.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +77,6 @@ public class GameActivity extends AppCompatActivity {
         showInstructions();
     }
 
-    //TODO:
-    //1. Set strings in file
     private void resetPointsAndLife() {
         pointsTextView = findViewById(R.id.points_text_view);
         lifeTextView = findViewById(R.id.life_text_view);
@@ -118,8 +111,6 @@ public class GameActivity extends AppCompatActivity {
         }.start();
     }
 
-    //TODO:
-    //1. load time from settings
     private String updateTimeMessage(long minutes, long seconds){
         StringBuilder timeMessage = new StringBuilder();
         timeMessage.append("Time Left: 0");
@@ -134,8 +125,6 @@ public class GameActivity extends AppCompatActivity {
         return String.valueOf(timeMessage);
     }
 
-    //TODO:
-    //1. Generate 10-15 random items from wanted list.
     private void loadTable() {
         final ArrayList<TableElementBlock> tableBlocks = new ArrayList<>();
         final ArrayList<BankTableBlock> bankBlocks;
@@ -154,6 +143,11 @@ public class GameActivity extends AppCompatActivity {
                 bankBlocks = prepareStage2(tableBlocks, collection);
                 break;
             }
+            case 3: {
+                bankBlocks = prepareStage3(new ArrayList<>(tableBlocks), collection);
+                break;
+            }
+
             default:
                 throw new IllegalArgumentException("number not exist");
         }
@@ -165,47 +159,20 @@ public class GameActivity extends AppCompatActivity {
         setTableListeners();
     }
 
-    private ArrayList<BankTableBlock> prepareStage2(ArrayList<TableElementBlock> tableElements, ElementCollection collection) {
-        ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
-        int bankAmount = ConstProperties.COLOR_GROUPS_BY_DIFFICULTY_LEVEL2[userSettings.getDifficulty() - 1];
-
-        ArrayList<Integer> colorsID = new ArrayList<>(collection.getColorMap().keySet());
-        colorsID.remove(0);
-        Collections.shuffle(colorsID);
-
-        for(int i = 0; i < bankAmount; i++) {
-            BankTableBlock bank = new BankTableBlock(ConstProperties.ELEMENTS_FAMILY_NAMES[colorsID.get(i)]);
-            bank.setRow(9);
-            bank.setCol(i);
-            bank.setColor(collection.getColorMap().get(colorsID.get(i)));
-            bank.setColorGroup(colorsID.get(i));
-            bankBlocks.add(bank);
-        }
-
-        for(TableElementBlock block : tableElements) {
-            block.setColor(ConstProperties.GENERIC_COLOR);
-            block.setVisibility(false);
-        }
-
-        initiateElementsPopup(new ArrayList<>(bankBlocks), collection);
-
-        return bankBlocks;
-    }
-
     private ArrayList<BankTableBlock> prepareStage1(ArrayList<TableElementBlock> blockElements, ElementCollection collection){
         Random rand = new Random();
         ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
-        int bankAmount = ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
+        int bankAmount = 15;//ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
         int rndAmount = 0;
 
         Collections.shuffle(blockElements);
 
         for(TableElementBlock block : blockElements) {
-            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) && rand.nextInt(2) == 1 &&
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) && /*rand.nextInt(2) == 1 &&*/
                     collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) {
 
                 rndAmount++;
-                BankTableBlock bank = new BankTableBlock(block.getElementSymbol());
+                BankTableBlock bank = new BankTableBlock(block.getElementSymbol(), block.getElementSymbol());
                 bank.setRow(9);
                 bank.setCol(rndAmount);
 
@@ -229,8 +196,74 @@ public class GameActivity extends AppCompatActivity {
         return bankBlocks;
     }
 
-    //TODO:
-    //1. Set strings in file
+    private ArrayList<BankTableBlock> prepareStage2(ArrayList<TableElementBlock> tableElements, ElementCollection collection) {
+        ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
+        int bankAmount = ConstProperties.COLOR_GROUPS_BY_DIFFICULTY_LEVEL2[userSettings.getDifficulty() - 1];
+
+        ArrayList<Integer> colorsID = new ArrayList<>(collection.getColorMap().keySet());
+        colorsID.remove(0);
+        Collections.shuffle(colorsID);
+
+        for(int i = 0; i < bankAmount; i++) {
+            BankTableBlock bank = new BankTableBlock(ConstProperties.ELEMENTS_FAMILY_NAMES[colorsID.get(i)], "");
+            bank.setRow(9);
+            bank.setCol(i);
+            bank.setColor(collection.getColorMap().get(colorsID.get(i)));
+            bank.setColorGroup(colorsID.get(i));
+            bankBlocks.add(bank);
+        }
+
+        for(TableElementBlock block : tableElements) {
+            block.setColor(ConstProperties.GENERIC_COLOR);
+            block.setVisibility(false);
+        }
+
+        initiateElementsPopup(new ArrayList<>(bankBlocks), collection);
+
+        return bankBlocks;
+    }
+
+    private ArrayList<BankTableBlock> prepareStage3(ArrayList<TableElementBlock> blockElements, ElementCollection collection) {
+        Random rand = new Random();
+        ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
+        int bankAmount =  ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
+        int rndAmount = 0;
+
+        Collections.shuffle(blockElements);
+
+        for(TableElementBlock block : blockElements) {
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) /*&& rand.nextInt(3) == 1*/ &&
+                    collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) {
+
+                rndAmount++;
+                BankTableBlock bank = new BankTableBlock(block.getElementName(), block.getElementSymbol());
+                if(rndAmount <= 8) {
+                    bank.setRow(8);
+                    bank.setCol(rndAmount);
+                } else {
+                    bank.setRow(9);
+                    bank.setCol(rndAmount - 8);
+                }
+
+
+                if(userSettings.getDifficulty() == 1) {
+                    bank.setColor(block.getColor());
+                    bank.setAtomicNumber(block.getBlockAtomicNumber());
+                } else if(userSettings.getDifficulty() == 2) {
+                    bank.setColor(block.getColor());
+                }
+
+                bankBlocks.add(bank);
+            }
+
+            if(rndAmount == bankAmount) {
+                break;
+            }
+        }
+
+        return bankBlocks;
+    }
+
     private void setTableListeners() {
         tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
             @Override
@@ -293,7 +326,7 @@ public class GameActivity extends AppCompatActivity {
             currentLevel++;
             userSettings.setCurrentStage(currentLevel);
             saveInstanceInPreferences();
-            if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST - 1) {
+            if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
                 startNewGame();
             } else {
                 showNameInsertDialog();
@@ -315,7 +348,7 @@ public class GameActivity extends AppCompatActivity {
             initializeScoreBoard();
         });
 
-        dialog.setCancelButtonListener(() -> initializeScoreBoard ());
+        dialog.setCancelButtonListener(this::initializeScoreBoard);
         dialog.show();
     }
 
@@ -325,9 +358,6 @@ public class GameActivity extends AppCompatActivity {
         finish();
     }
 
-    //TODO:
-    //1. Set strings in file
-    //2. Click "No" -> return to main screen without save.
     private void showLossDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Game Over");

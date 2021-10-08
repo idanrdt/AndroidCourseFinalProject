@@ -92,11 +92,20 @@ public class PeriodicTableView extends View {
 
         measureCanvas();
         int startBankOffset;
+        int bankAmount;
 
-        if(bankBlocks.size() % 2 == 0) {
-            startBankOffset = (screenWidth / 2) - (bankBlocks.size() / 2) * (bankBlockSize + bankBlocks.size());
+        if(level == 3 && bankBlocks.size() > 8) {
+            bankAmount = 8;
         } else {
-            startBankOffset = (screenWidth / 2) - (bankBlocks.size() / 2) * bankBlockSize + bankBlockSize / 2;
+            bankAmount = bankBlocks.size();
+        }
+
+        if(bankAmount % 2 == 0) {
+            startBankOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
+        } else {
+            bankAmount--;
+            startBankOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
+            startBankOffset += (bankBlockSize / 2);
         }
 
         int startTableOffset = (screenWidth / 2) - (colAmount * (tableBlockSize + colAmount / 2)) / 2;
@@ -134,6 +143,9 @@ public class PeriodicTableView extends View {
                 drawLevel2Table(canvas);
                 break;
             }
+            case 3: {
+                drawLevel3Table(canvas);
+            }
         }
     }
 
@@ -169,7 +181,7 @@ public class PeriodicTableView extends View {
         boxSize = bankBlockSize / 2 - 1;
 
         if(bankTargets.size() == 0) {
-            stateListenersList.forEach(TableStateListeners::onTableCompleted);
+            finalizeTable();
         } else if(!bankTargets.get(0).getAtomicNumber().equals("")) {
             symbolOffset = 5;
         }
@@ -185,7 +197,7 @@ public class PeriodicTableView extends View {
 
             canvas.drawRect(drawingCursor, blockStroke);
             canvas.drawRect(drawingCursor, blockPaint);
-            canvas.drawText(bank.getName(), drawingCursor.left + bankBlockSize /2f, drawingCursor.bottom - (int)(bankBlockSize / symbolOffset), symbolPaint);
+            canvas.drawText(bank.getSymbol(), drawingCursor.left + bankBlockSize /2f, drawingCursor.bottom - (int)(bankBlockSize / symbolOffset), symbolPaint);
             canvas.drawText(bank.getAtomicNumber(), drawingCursor.left + tableBlockSize / 20f,drawingCursor.top + atomicNumberPaint.getTextSize(), atomicNumberPaint);
         }
     }
@@ -240,16 +252,16 @@ public class PeriodicTableView extends View {
                     drawingCursor.bottom - (int) (tableBlockSize / 2.8 + 10), symbolPaint);
 
             canvas.drawText(String.valueOf(selectedBlock.getBlockAtomicNumber()), drawingCursor.left + tableBlockSize / 20f,
-                        drawingCursor.top + atomicNumberPaint.getTextSize(), atomicNumberPaint);
+                    drawingCursor.top + atomicNumberPaint.getTextSize(), atomicNumberPaint);
 
             canvas.drawText(String.valueOf(selectedBlock.getBlockWeight()), drawingCursor.left + tableBlockSize / 2f,
-                        drawingCursor.bottom - tableBlockSize / 20f, weightPaint);
+                    drawingCursor.bottom - tableBlockSize / 20f, weightPaint);
         }
         blockStroke.setStrokeWidth(2);
 
 
         if(bankTargets.size() == 0) {
-            stateListenersList.forEach(TableStateListeners::onTableCompleted);
+            finalizeTable();
         }
 
         boxSize = bankBlockSize / 2 - 1;
@@ -269,6 +281,54 @@ public class PeriodicTableView extends View {
             canvas.drawText(bank.getName().substring(bank.getName().indexOf(" ")), drawingCursor.left, drawingCursor.bottom, legendPaint);
             drawingCursor.bottom -= weightPaint.getTextSize();
             canvas.drawText(bank.getName().substring(0, bank.getName().indexOf(" ")), drawingCursor.left, drawingCursor.bottom, legendPaint);
+        }
+    }
+
+    private void drawLevel3Table(Canvas canvas) {
+        int boxSize = tableBlockSize / 2 - 1;
+
+        for(TableElementBlock block : tableBlocks) {
+            drawingCursor.right = block.getLocationY() + boxSize;
+            drawingCursor.left = block.getLocationY() - boxSize;
+            drawingCursor.bottom = block.getLocationX() + boxSize;
+            drawingCursor.top = block.getLocationX() - boxSize;
+            canvas.drawRect(drawingCursor, blockStroke);
+
+            blockPaint.setColor(block.getColor());
+
+            canvas.drawRect(drawingCursor, blockPaint);
+
+            canvas.drawText(block.getElementSymbol(), drawingCursor.left + tableBlockSize / 2f,
+                    drawingCursor.bottom - (int) (tableBlockSize / 2.8), symbolPaint);
+
+            if(!(block.getElementSymbol().contains("*"))) {
+                canvas.drawText(String.valueOf(block.getBlockAtomicNumber()), drawingCursor.left + tableBlockSize / 20f,
+                        drawingCursor.top + atomicNumberPaint.getTextSize(), atomicNumberPaint);
+
+                canvas.drawText(String.valueOf(block.getBlockWeight()), drawingCursor.left + tableBlockSize / 2f,
+                        drawingCursor.bottom - tableBlockSize / 20f, weightPaint);
+            }
+        }
+
+        boxSize = bankBlockSize / 2 - 1;
+
+        if(bankTargets.size() == 0) {
+            stateListenersList.forEach(TableStateListeners::onTableCompleted);
+        }
+        
+        for(BankTableBlock bank : bankTargets) {
+            drawingCursor.right = bank.getLocationY() + boxSize;
+            drawingCursor.left = bank.getLocationY() - boxSize;
+            drawingCursor.bottom = bank.getLocationX() + boxSize / 3;
+            drawingCursor.top = bank.getLocationX() - boxSize / 3;
+
+            blockPaint.setColor(bank.getColor());
+
+            canvas.drawRect(drawingCursor, blockStroke);
+            canvas.drawRect(drawingCursor, blockPaint);
+            drawingCursor.bottom -=  boxSize / 4;
+            drawingCursor.left += boxSize;
+            canvas.drawText(bank.getName(), drawingCursor.left, drawingCursor.bottom, legendPaint);
         }
     }
 
@@ -353,7 +413,7 @@ public class PeriodicTableView extends View {
                     for (TableElementBlock elementBlock : tableBlocks) {
                         if ((selectedBlock.getLocationX() > elementBlock.getLocationX() - size && selectedBlock.getLocationX() < elementBlock.getLocationX() + size) &&
                                 (selectedBlock.getLocationY() > elementBlock.getLocationY() - size && selectedBlock.getLocationY() < elementBlock.getLocationY() + size)) {
-                            if(!elementBlock.getVisibility() && elementBlock.getElementSymbol().equals(selectedBlock.getName())) {
+                            if(elementBlock.getElementSymbol().equals(selectedBlock.getSymbol())) {
                                 elementBlock.setVisibility(true);
                                 bankTargets.remove(selectedBlock);
                                 selectedBlock = null;
@@ -378,22 +438,38 @@ public class PeriodicTableView extends View {
         }
     }
 
-    private void clickTableElement() {
-
-    }
-
     private void measureCanvas() {
         final int blockWidth = (int)(tableRect.width() / (colAmount + 3));
         final int blockHeight = tableRect.height() / (rowAmount + 3);
-        tableBlockSize = bankBlockSize = Math.min(blockWidth, blockHeight);
+        tableBlockSize = Math.min(blockWidth, blockHeight);
 
         symbolPaint.setTextSize(tableBlockSize / 2f);
         atomicNumberPaint.setTextSize(tableBlockSize / 4f);
         weightPaint.setTextSize(tableBlockSize / 5f);
         legendPaint.setTextSize(tableBlockSize / 3f);
+        setBankBlockSizeByLevel();
+    }
 
-        if(level == 2) {
-            bankBlockSize *= 1.5;
+    private void setBankBlockSizeByLevel() {
+        switch(level) {
+            case 1: {
+                bankBlockSize = tableBlockSize;
+                break;
+            }
+            case 2: {
+                bankBlockSize = (int)(tableBlockSize * 1.5);
+                break;
+            }
+            case 3: {
+                bankBlockSize = tableBlockSize * 2;
+                break;
+            }
         }
+    }
+
+    private void finalizeTable() {
+        tableBlocks.clear();
+        bankTargets.clear();
+        stateListenersList.forEach(TableStateListeners::onTableCompleted);
     }
 }

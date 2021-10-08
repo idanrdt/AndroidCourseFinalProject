@@ -30,23 +30,23 @@ public class ScoreActivity extends AppCompatActivity {
     private List<String> players;
     private List<Integer> scores;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
-        Button clearbutton=findViewById(R.id.clearleader);
+        Button clearButton=findViewById(R.id.leaderboard_button_clear_all);
         SharedPreferences preferences = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
         userScores = preferences.getStringSet(ConstProperties.SCORES, new HashSet<>());
 
         playersScore = new TreeMap<>(Collections.reverseOrder());
         for (String userScore : userScores) {
-            String playerName = userScore.substring(0, userScore.indexOf(" "));
-            Integer score = Integer.parseInt(userScore.substring(userScore.indexOf(" ") + 1));
+            String playerName = userScore.replaceAll("[0-9]", "");
+            Integer score = Integer.parseInt(userScore.replaceAll("[^0-9]",""));
+
             playersScore.put(score, playerName);
         }
 
-        clearbutton.setOnClickListener(new View.OnClickListener() {
+        clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScoreActivity.this);
@@ -62,7 +62,7 @@ public class ScoreActivity extends AppCompatActivity {
         players = new ArrayList<>(playersScore.values());
         scores = new ArrayList<>(playersScore.keySet());
 
-        RecyclerView recyclerView = findViewById(R.id.leader);
+        RecyclerView recyclerView = findViewById(R.id.leaderboard_recycler_view_table);
 
         adapter=new ScoreViewAdapter(scores, players);
         recyclerView.setAdapter(adapter);
@@ -76,6 +76,7 @@ public class ScoreActivity extends AppCompatActivity {
         players.clear();
         scores.clear();
         adapter.notifyDataSetChanged();
+        //delete from SP
     }
 
 
@@ -89,11 +90,6 @@ public class ScoreActivity extends AppCompatActivity {
         super.onPause();
         if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
             BackgroundMusic.onPause();
-            //finish();
         }
     }
 }
-
-
-
-
