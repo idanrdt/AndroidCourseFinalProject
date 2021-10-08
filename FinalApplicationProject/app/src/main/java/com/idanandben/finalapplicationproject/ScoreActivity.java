@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,9 +44,14 @@ public class ScoreActivity extends AppCompatActivity {
         clearbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userScores.clear();
-                playersScore.clear();
-                adapter.notifyDataSetChanged();
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScoreActivity.this);
+                dialogBuilder.setTitle("clear all");
+                dialogBuilder.setMessage("Are you sure you want to clear board?");
+                onDestroy();
+                dialogBuilder.setPositiveButton("Yes", (dialog, which) -> confirmDelete(userScores,playersScore));
+                dialogBuilder.setNegativeButton("No", null);
+                AlertDialog endDialog = dialogBuilder.create();
+                endDialog.show();
             }
         });
         List<String> players = new ArrayList<>(playersScore.values());
@@ -59,6 +65,13 @@ public class ScoreActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
+    public void confirmDelete(Set<String> userScores, Map<Integer, String> playersScore){
+
+        userScores.clear();
+        playersScore.clear();
+        adapter.notifyDataSetChanged();
+
+    }
 
 
     @Override
@@ -71,7 +84,7 @@ public class ScoreActivity extends AppCompatActivity {
         super.onPause();
         if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
             BackgroundMusic.onPause();
-            finish();
+            //finish();
         }
     }
 }

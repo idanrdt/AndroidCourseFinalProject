@@ -9,36 +9,42 @@ public class BackgroundMusic  {
     static MediaPlayer player;
     private static boolean muted=false;
 
-    public static void startGamemusic(){
+    public static void startGamemusic(Context context){
         if(!muted) {
-        }
-    }
-    public static void startWinningusic(){
-        if(!muted) {
-
-        }
-    }
-
-    public static void startFailmusic(){
-        if(!muted) {
-        }
-    }
-
-    public static void startLosemusic(){
-        if(!muted) {
-        }
-    }
-    public static void onStart(Context context,String name){
         onDestroy();
-        if(!muted){
+        player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
+        player.setLooping(true);
+        player.start();
+        }
+    }
+    public static void startWinningusic(Context context){
+        if(!muted) {
+            onDestroy();
+            player=MediaPlayer.create(context.getApplicationContext(),R.raw.victory);
+            player.start();
+        }
+    }
 
-            if(name.equals("start")){
-                player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
-                player.setLooping(true);
-            }
-            else if(name.equals("time")) {
-                player=MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
-            }
+  /*  public static void startFailmusic(Context context){
+        if(!muted) {
+            onDestroy();
+            player=MediaPlayer.create(context.getApplicationContext(),R.raw.wrongtune);
+            player.start();
+        }
+    }*/
+
+    public static void startLosemusic(Context context){
+        if(!muted) {
+            onDestroy();
+            player=MediaPlayer.create(context.getApplicationContext(),R.raw.lose);
+            player.start();
+        }
+    }
+
+    public static void startTimermusic(Context context){
+        if(!muted) {
+            onDestroy();
+            player=MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
             player.start();
         }
     }
@@ -77,11 +83,7 @@ public class BackgroundMusic  {
     public static boolean isMuted(){
         return muted;
     }
-    public static void onRestart(Context context)
-    {
-        onDestroy();
-        onStart(context,"start");
-    }
+
     public static boolean isPlaying()
     {
         return player != null && player.isPlaying();

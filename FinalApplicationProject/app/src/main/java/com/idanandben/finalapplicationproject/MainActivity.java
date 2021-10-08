@@ -5,13 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BackgroundMusic.onStart(this,"start");
+        BackgroundMusic.startGamemusic(this);
         showMainMenu();
 
     }
@@ -57,13 +55,10 @@ public class MainActivity extends AppCompatActivity {
                 //your code
                 Toast.makeText(MainActivity.this,"powered by Ben Machlev& Idan Arditi",Toast.LENGTH_LONG).show();
                  return true;
-            case R.id.rateusmenu:
-                RateingDialog();
-                return true;
             case R.id.music:
                 BackgroundMusic.changeMuteState();
                 if(!BackgroundMusic.isPlaying()) {
-                    BackgroundMusic.onStart(this,"start");
+                    BackgroundMusic.startGamemusic(this);
                 }
 
                 return true;
@@ -141,41 +136,6 @@ public class MainActivity extends AppCompatActivity {
         endDialog.show();
     }
 
-    private void RateingDialog(){
-        final AlertDialog.Builder builderdialograte=new AlertDialog.Builder(this);
-        ConstraintLayout constraintLayout=new ConstraintLayout(this);
-        final RatingBar ratingBar=new RatingBar(this);
-        ConstraintLayout.LayoutParams lp=new ConstraintLayout.LayoutParams(
-          ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-        );
-        ratingBar.setLayoutParams(lp);
-        ratingBar.setNumStars(5);
-        ratingBar.setStepSize(1);
-        constraintLayout.addView(ratingBar);
-        builderdialograte.setIcon(android.R.drawable.btn_star_big_on);
-        builderdialograte.setTitle("Rate us");
-        builderdialograte.setMessage("rate us please");
-        builderdialograte.setView(constraintLayout);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                String message=null;
-                if(rating<3.5){
-                    message="sorry to hear that";
-                }
-                else{
-                    message="thank you!";
-                }
-                Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builderdialograte.setPositiveButton("Done",null);
-        builderdialograte.setNegativeButton("return", null);
-        AlertDialog endDialog = builderdialograte.create();
-        endDialog.show();
-    }
     @Override
     protected void onPause() {
         super.onPause();

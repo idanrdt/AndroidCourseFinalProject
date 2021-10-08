@@ -75,7 +75,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void startNewGame() {
-        BackgroundMusic.onStart(this,"start");
+        BackgroundMusic.startGamemusic(this);
         hideSystemUI();
         loadTable();
         resetPointsAndLife();
@@ -126,7 +126,7 @@ public class GameActivity extends AppCompatActivity {
         timeMessage.append(minutes).append(":");
         if(seconds < 10) {
             if(minutes==0) {
-                BackgroundMusic.onStart(this, "time");
+                BackgroundMusic.startTimermusic(this);
             }
             timeMessage.append("0");
         }
@@ -243,7 +243,7 @@ public class GameActivity extends AppCompatActivity {
             public void onWrongElementPlaced() {
                 lifeAmount --;
                 if(!BackgroundMusic.isMuted()){
-                    wrong = MediaPlayer.create(getApplicationContext(), R.raw.wrongtune);
+                    wrong=MediaPlayer.create(GameActivity.this,R.raw.wrongtune);
                     wrong.start();
                 }
                 lifeTextView.setText("Life: " + lifeAmount);
@@ -285,13 +285,10 @@ public class GameActivity extends AppCompatActivity {
         timer.cancel();
         int currentLevel = userSettings.getCurrentLevel();
         if (!victorious) {
-            wrong=MediaPlayer.create(this,R.raw.lose);
-            wrong.start();
-            //BackgroundMusic.onStart(this,"loser");
+            BackgroundMusic.startLosemusic(this);
             showLossDialog();
         } else {
-            wrong=MediaPlayer.create(this,R.raw.victory);
-            wrong.start();
+            BackgroundMusic.startWinningusic(this);
             showWinningDialog();
             currentLevel++;
             userSettings.setCurrentStage(currentLevel);
