@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     //think about timer trail
     //PPT-idan&ben
     //poster-idan
-    private RatingBar ratingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,13 +142,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void RateingDialog(){
-        RatingBar ratingBar=findViewById(R.id.ratingbar);
-        AlertDialog.Builder builderdialograte=new AlertDialog.Builder(this);
+        final AlertDialog.Builder builderdialograte=new AlertDialog.Builder(this);
+        ConstraintLayout constraintLayout=new ConstraintLayout(this);
+        final RatingBar ratingBar=new RatingBar(this);
+        ConstraintLayout.LayoutParams lp=new ConstraintLayout.LayoutParams(
+          ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+        );
+        ratingBar.setLayoutParams(lp);
+        ratingBar.setNumStars(5);
+        ratingBar.setStepSize(1);
+        constraintLayout.addView(ratingBar);
+        builderdialograte.setIcon(android.R.drawable.btn_star_big_on);
         builderdialograte.setTitle("Rate us");
         builderdialograte.setMessage("rate us please");
-        /*ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+        builderdialograte.setView(constraintLayout);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {/*
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 String message=null;
                 if(rating<3.5){
                     message="sorry to hear that";
@@ -158,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
 
         builderdialograte.setPositiveButton("Done",null);
         builderdialograte.setNegativeButton("return", null);
@@ -168,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!hasWindowFocus()) {
+        if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
             BackgroundMusic.onPause();
         }
     }

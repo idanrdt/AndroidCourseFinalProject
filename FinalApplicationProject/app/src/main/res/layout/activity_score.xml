@@ -8,7 +8,18 @@
     tools:context=".ScoreActivity"
     >
 
+    <Button
+        android:id="@+id/clearleader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="clear"
+        app:layout_constraintEnd_toStartOf="@+id/scoreleader"
+        app:layout_constraintHorizontal_bias="0.787"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
+        android:id="@+id/nameleader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Names:"
@@ -16,6 +27,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/scoreleader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scores:"
@@ -28,10 +40,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.0"/>
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

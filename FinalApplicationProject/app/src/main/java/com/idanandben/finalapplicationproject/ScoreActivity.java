@@ -3,13 +3,15 @@ package com.idanandben.finalapplicationproject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter;
+import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 
 import java.util.ArrayList;
@@ -21,12 +23,13 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class ScoreActivity extends AppCompatActivity {
+    private ScoreViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
-
+        Button clearbutton=findViewById(R.id.clearleader);
         SharedPreferences preferences = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
         Set<String> userScores = preferences.getStringSet(ConstProperties.SCORES, new HashSet<>());
 
@@ -36,21 +39,40 @@ public class ScoreActivity extends AppCompatActivity {
             Integer score = Integer.parseInt(userScore.substring(userScore.indexOf(" ") + 1));
             playersScore.put(score, playerName);
         }
+
+        clearbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userScores.clear();
+                playersScore.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
         List<String> players = new ArrayList<>(playersScore.values());
         List<Integer> scores = new ArrayList<>(playersScore.keySet());
 
         RecyclerView recyclerView = findViewById(R.id.leader);
 
-        ScoreViewAdapter adapter=new ScoreViewAdapter(scores, players);
+        adapter=new ScoreViewAdapter(scores, players);
         recyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
 
+
     @Override
     public void onBackPressed() {
+        finish();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
+            BackgroundMusic.onPause();
+            finish();
+        }
     }
 }
 

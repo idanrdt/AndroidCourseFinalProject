@@ -9,6 +9,25 @@ public class BackgroundMusic  {
     static MediaPlayer player;
     private static boolean muted=false;
 
+    public static void startGamemusic(){
+        if(!muted) {
+        }
+    }
+    public static void startWinningusic(){
+        if(!muted) {
+
+        }
+    }
+
+    public static void startFailmusic(){
+        if(!muted) {
+        }
+    }
+
+    public static void startLosemusic(){
+        if(!muted) {
+        }
+    }
     public static void onStart(Context context,String name){
         onDestroy();
         if(!muted){

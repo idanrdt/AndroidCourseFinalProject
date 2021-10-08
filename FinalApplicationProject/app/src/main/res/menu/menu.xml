@@ -16,4 +16,5 @@
         android:id="@+id/rateusmenu"
         android:icon="@drawable/ic_baseline_star_rate_24"
         app:showAsAction="always"/>
+
 </menu>
