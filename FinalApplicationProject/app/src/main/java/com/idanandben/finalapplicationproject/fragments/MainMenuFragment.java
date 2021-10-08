@@ -19,7 +19,7 @@ public class MainMenuFragment extends Fragment {
 
         void onCustomGameButtonClicked();
 
-        void onleaderboardClicked();
+        void onLeaderboardClicked();
     }
 
     public MainMenuFragment() {
@@ -41,7 +41,7 @@ public class MainMenuFragment extends Fragment {
         customGameButton.setOnClickListener(v -> listener.onCustomGameButtonClicked());
 
         MaterialButton quickLeaderboard =fragmentView.findViewById((R.id.leaderboard_scores));
-        quickLeaderboard.setOnClickListener(v -> listener.onleaderboardClicked());
+        quickLeaderboard.setOnClickListener(v -> listener.onLeaderboardClicked());
 
         return fragmentView;
     }

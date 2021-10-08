@@ -5,87 +5,104 @@ import android.media.MediaPlayer;
 
 import com.idanandben.finalapplicationproject.R;
 
+enum MusicState {
+    PREPARED,
+    STARTED,
+    PAUSED,
+    OFF,
+}
+
+enum MusicType {
+    WINNING,
+    LOSING,
+    WRONG_ITEM,
+    NO_TIME_LEFT,
+}
+
 public class BackgroundMusic  {
-    static MediaPlayer player;
-    private static boolean muted=false;
+    private static MediaPlayer player;
+    private static MediaPlayer singlePlayer;
+    private static boolean muted = false;
+    private static MusicState playerState = MusicState.OFF;
 
-    public static void startGamemusic(Context context){
-        if(!muted) {
-        onDestroy();
-        player=MediaPlayer.create(context.getApplicationContext(),R.raw.bkg);
-        player.setLooping(true);
-        player.start();
+    public static void startBackgroundMusic(Context context){
+        if(player == null) {
+            player = MediaPlayer.create(context, R.raw.bkg);
+            player.setLooping(true);
         }
+
+        startBackgroundMusic();
+        playerState = MusicState.PREPARED;
     }
-    public static void startWinningusic(Context context){
-        if(!muted) {
-            onDestroy();
-            player=MediaPlayer.create(context.getApplicationContext(),R.raw.victory);
+
+    public static void startBackgroundMusic() {
+        if(player != null && !muted && playerState != MusicState.STARTED) {
             player.start();
+            playerState = MusicState.STARTED;
         }
     }
 
-  /*  public static void startFailmusic(Context context){
+    public static void pauseBackgroundMusic() {
+        if(playerState != MusicState.PAUSED) {
+            playerState = MusicState.PAUSED;
+            player.pause();
+        }
+    }
+
+    public static void startGameWonMusic(Context context){
         if(!muted) {
-            onDestroy();
-            player=MediaPlayer.create(context.getApplicationContext(),R.raw.wrongtune);
-            player.start();
+            playSingleMusic(context, MusicType.WINNING);
         }
-    }*/
+    }
 
-    public static void startLosemusic(Context context){
+    public static void startGameLossMusic(Context context){
         if(!muted) {
-            onDestroy();
-            player=MediaPlayer.create(context.getApplicationContext(),R.raw.lose);
-            player.start();
+            playSingleMusic(context, MusicType.LOSING);
         }
     }
 
-    public static void startTimermusic(Context context){
+    public static void startWrongItemPlacedMusic(Context context){
         if(!muted) {
-            onDestroy();
-            player=MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
-            player.start();
+            playSingleMusic(context, MusicType.WRONG_ITEM);
         }
     }
 
-    public static void onStop() {
-        player.stop();
-        player.release();
+    public static void startLastSecondsMusic(Context context){
+        if(!muted) {
+            playSingleMusic(context, MusicType.NO_TIME_LEFT);
+        }
     }
-    public static void onPause(){
+
+    private static void playSingleMusic(Context context, MusicType musicType) {
         player.pause();
-    }
-    public static void  onResume(){
-        if (!isPlaying()) {
-            player.start();}
-
-    }
-    public static void onDestroy (){
-        if (player != null) {
-            try {
-                onStop();
-                } finally {
-                player = null;
+        final int location = player.getCurrentPosition();
+        switch (musicType) {
+            case WINNING: {
+                singlePlayer = MediaPlayer.create(context, R.raw.victory);
+                break;
+            }
+            case LOSING:{
+                singlePlayer = MediaPlayer.create(context.getApplicationContext(),R.raw.lose);
+                break;
+            }
+            case WRONG_ITEM:{
+                singlePlayer = MediaPlayer.create(context.getApplicationContext(),R.raw.wrongtune);
+                break;
+            }
+            case NO_TIME_LEFT: {
+                singlePlayer = MediaPlayer.create(context.getApplicationContext(),R.raw.timetune);
+                break;
             }
         }
-    }
-
-    public static void changeMuteState(){
-        if(!muted) {
-            muted = true;
-            onDestroy();
-        }
-        else {
-            muted=false;
-        }
-    }
-    public static boolean isMuted(){
-        return muted;
-    }
-
-    public static boolean isPlaying()
-    {
-        return player != null && player.isPlaying();
+        singlePlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.release();
+                mp = null;
+                player.seekTo(location);
+                player.start();
+            }
+        });
+        singlePlayer.start();
     }
 }

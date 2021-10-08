@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 public class GameActivity extends AppCompatActivity {
 
     private PeriodicTableView tableView;
-    private MediaPlayer wrong;
     private UserSettings userSettings;
 
     private SharedPreferences prefs;
@@ -44,13 +43,14 @@ public class GameActivity extends AppCompatActivity {
 
     private CountDownTimer timer;
     private CountDownTimer elementSwitchTimer;
+
     private int pointsAmount;
     private int lifeAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         hideSystemUI();
         setContentView(R.layout.activity_game);
         userSettings = getIntent().getParcelableExtra(ConstProperties.USER_SETTINGS_MSG);
@@ -66,11 +66,12 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        resetTimers();
         finish();
     }
 
     private void startNewGame() {
-        BackgroundMusic.startGamemusic(this);
+        resetTimers();
         hideSystemUI();
         loadTable();
         resetPointsAndLife();
@@ -99,6 +100,9 @@ public class GameActivity extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 String timeMessage = updateTimeMessage(millisUntilFinished / 1000 / 60, millisUntilFinished / 1000 % 60);
                 timeLeftTextView.setText(timeMessage);
+                if((millisUntilFinished / 1000 % 60) == 10  && millisUntilFinished / 1000 / 60 == 0) {
+                    BackgroundMusic.startLastSecondsMusic(getApplicationContext());
+                }
             }
 
             @Override
@@ -116,9 +120,6 @@ public class GameActivity extends AppCompatActivity {
         timeMessage.append("Time Left: 0");
         timeMessage.append(minutes).append(":");
         if(seconds < 10) {
-            if(minutes==0) {
-                BackgroundMusic.startTimermusic(this);
-            }
             timeMessage.append("0");
         }
         timeMessage.append(seconds);
@@ -149,7 +150,7 @@ public class GameActivity extends AppCompatActivity {
             }
 
             default:
-                throw new IllegalArgumentException("number not exist");
+                throw new IllegalArgumentException("wrong level number");
         }
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -162,7 +163,7 @@ public class GameActivity extends AppCompatActivity {
     private ArrayList<BankTableBlock> prepareStage1(ArrayList<TableElementBlock> blockElements, ElementCollection collection){
         Random rand = new Random();
         ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
-        int bankAmount = 15;//ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
+        int bankAmount = ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
         int rndAmount = 0;
 
         Collections.shuffle(blockElements);
@@ -274,11 +275,8 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onWrongElementPlaced() {
+                BackgroundMusic.startWrongItemPlacedMusic(getApplicationContext());
                 lifeAmount --;
-                if(!BackgroundMusic.isMuted()){
-                    wrong=MediaPlayer.create(GameActivity.this,R.raw.wrongtune);
-                    wrong.start();
-                }
                 lifeTextView.setText("Life: " + lifeAmount);
                 if(lifeAmount <= 0 ) {
                     finnishGame(false);
@@ -318,10 +316,10 @@ public class GameActivity extends AppCompatActivity {
         timer.cancel();
         int currentLevel = userSettings.getCurrentLevel();
         if (!victorious) {
-            BackgroundMusic.startLosemusic(this);
+            BackgroundMusic.startGameLossMusic(getApplicationContext());
             showLossDialog();
         } else {
-            BackgroundMusic.startWinningusic(this);
+            BackgroundMusic.startGameWonMusic(getApplicationContext());
             showWinningDialog();
             currentLevel++;
             userSettings.setCurrentStage(currentLevel);
@@ -469,13 +467,27 @@ public class GameActivity extends AppCompatActivity {
         };
     }
 
+    private void resetTimers() {
+        if(timer != null) {
+            timer.cancel();
+        }
+        if(elementSwitchTimer != null) {
+            elementSwitchTimer.cancel();
+        }
+    }
+
     @Override
     protected void onPause() {
+        finish();
         super.onPause();
-        if (hasWindowFocus() && BackgroundMusic.isPlaying()) {
-            BackgroundMusic.onStop();
-            //finish();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        if(level == TRIM_MEMORY_BACKGROUND || level == TRIM_MEMORY_UI_HIDDEN) {
+            BackgroundMusic.pauseBackgroundMusic();
         }
+        super.onTrimMemory(level);
 
     }
 }

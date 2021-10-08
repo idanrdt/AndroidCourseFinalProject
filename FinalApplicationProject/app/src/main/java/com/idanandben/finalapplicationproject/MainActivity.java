@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,6 @@ import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
 
-    //level 3 - idan
     //add dialog between levels
     //add translation
     //add instructions(VISAULIATY&TEXT)
@@ -32,10 +32,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        BackgroundMusic.startGamemusic(this);
+        BackgroundMusic.startBackgroundMusic(this);
         showMainMenu();
-
     }
 
     @Override
@@ -44,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu, menu); //your file name
         return super.onCreateOptionsMenu(menu);    }
 
-    @Override
+/*    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.about:
@@ -54,14 +52,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.music:
                 BackgroundMusic.changeMuteState();
                 if(!BackgroundMusic.isPlaying()) {
-                    BackgroundMusic.startGamemusic(this);
+                    BackgroundMusic.startBackgroundMusic(this);
                 }
 
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
 
     private void showMainMenu() {
         MainMenuFragment mainMenuFragment = new MainMenuFragment();
@@ -75,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
             public void onCustomGameButtonClicked() {
                 startCustomGame();
             }
-            @Override
-            public void onleaderboardClicked(){leaderboard();}
 
+            @Override
+            public void onLeaderboardClicked(){leaderboard();}
         });
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
@@ -125,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Exit");
         dialogBuilder.setMessage("Are you sure you want to exit?");
-        onDestroy();
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> finish());
         dialogBuilder.setNegativeButton("No", null);
         AlertDialog endDialog = dialogBuilder.create();
@@ -133,17 +130,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        BackgroundMusic.startBackgroundMusic();
+        super.onResume();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        if (hasWindowFocus() && BackgroundMusic.isPlaying()) {
-            BackgroundMusic.onPause();
+        if(!hasWindowFocus()) {
+
         }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        onWindowFocusChanged(hasWindowFocus());
-        BackgroundMusic.onResume();
+    public void onTrimMemory(int level) {
+        if(level == TRIM_MEMORY_BACKGROUND || level == TRIM_MEMORY_UI_HIDDEN) {
+            BackgroundMusic.pauseBackgroundMusic();
+        }
+        super.onTrimMemory(level);
+
     }
 }

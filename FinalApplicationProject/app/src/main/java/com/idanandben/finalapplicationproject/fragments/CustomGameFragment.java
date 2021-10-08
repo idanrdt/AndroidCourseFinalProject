@@ -42,7 +42,6 @@ public class CustomGameFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        BackgroundMusic.onResume();
         super.onCreate(savedInstanceState);
         preferences = getActivity().getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
     }
@@ -68,12 +67,12 @@ public class CustomGameFragment extends Fragment {
             params.setMargins(20, 10, 20, 10);
 
             levelButton.setLayoutParams(params);
-            levelButton.setBackground(this.getResources().getDrawable(R.drawable.hexagon));
+            levelButton.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.hexagon, null));
 
             if (i <= maxAllowedLevel) {
                 levelButton.setText(String.valueOf(i));
                 levelButton.setTextSize(30);
-                levelButton.setOnClickListener(v -> showDifficultyDialog(v));
+                levelButton.setOnClickListener(this::showDifficultyDialog);
             } else {
                 levelButton.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.level_locked, null));
                 levelButton.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);

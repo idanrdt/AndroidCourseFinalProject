@@ -17,7 +17,7 @@ public class ConstProperties {
     public static int[] TIME_MINUTES_BY_DIFFICULTY = new int[] {1, 1, 0};
     public static int[] TIME_SECONDS_BY_DIFFICULTY = new int[] {30, 0, 45};
 
-    public static int[] BLOCK_AMOUNT_BY_DIFFICULTY = new int[] {10, 15, 10};
+    public static int[] BLOCK_AMOUNT_BY_DIFFICULTY = new int[] {8, 12, 16};
     public static int[] COLOR_GROUPS_BY_DIFFICULTY_LEVEL2 = new int[] {3, 5, 8};
     public static int[] POINTS_MULTIPLIER_BY_DIFFICULTY = new int[] {1, 2, 5};
 
@@ -25,13 +25,13 @@ public class ConstProperties {
     public static int GENERIC_COLOR = 0xFFFFFFFF;
 
     //Level 1 constants
-    public static String LEVEL1_INSTRUCTIONS = "1";
+    public static String LEVEL1_INSTRUCTIONS = "Place the elements in their positions";
 
     //Level 2 constants
-    public static String LEVEL2_INSTRUCTIONS = "1";
+    public static String LEVEL2_INSTRUCTIONS = "Pick the element Family Group";
 
     //Level 3 constants
-    public static String LEVEL3_INSTRUCTIONS = "1";
+    public static String LEVEL3_INSTRUCTIONS = "Match the element name to their symbol";
 
 }
 
