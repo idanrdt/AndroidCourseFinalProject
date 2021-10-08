@@ -129,7 +129,7 @@ public class GameActivity extends AppCompatActivity {
     private void loadTable() {
         final ArrayList<TableElementBlock> tableBlocks = new ArrayList<>();
         final ArrayList<BankTableBlock> bankBlocks;
-        ElementCollection collection = new ElementCollection();
+        ElementCollection collection = new ElementCollection(getApplicationContext());
         for(Element element : collection.getElements().values()) {
             TableElementBlock block = new TableElementBlock(element, collection.getColorMap().get(element.colorGroup));
             tableBlocks.add(block);
