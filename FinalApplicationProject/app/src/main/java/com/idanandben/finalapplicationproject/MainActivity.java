@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,24 +41,25 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu, menu); //your file name
         return super.onCreateOptionsMenu(menu);    }
 
-/*    @Override
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        boolean result;
+
         switch (item.getItemId()) {
             case R.id.about:
-                //your code
-                Toast.makeText(MainActivity.this,"powered by Ben Machlev& Idan Arditi",Toast.LENGTH_LONG).show();
-                 return true;
+                Toast.makeText(MainActivity.this,"Powered by Ben Machlev & Idan Arditi",Toast.LENGTH_LONG).show();
+                 result = true;
+                 break;
             case R.id.music:
                 BackgroundMusic.changeMuteState();
-                if(!BackgroundMusic.isPlaying()) {
-                    BackgroundMusic.startBackgroundMusic(this);
-                }
-
-                return true;
+                result = true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                result = super.onOptionsItemSelected(item);
         }
-    }*/
+
+        return result;
+    }
 
     private void showMainMenu() {
         MainMenuFragment mainMenuFragment = new MainMenuFragment();
@@ -123,7 +123,10 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Exit");
         dialogBuilder.setMessage("Are you sure you want to exit?");
-        dialogBuilder.setPositiveButton("Yes", (dialog, which) -> finish());
+        dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+            BackgroundMusic.stopBackgroundMusic();
+            finish();
+                });
         dialogBuilder.setNegativeButton("No", null);
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
@@ -133,14 +136,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         BackgroundMusic.startBackgroundMusic();
         super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if(!hasWindowFocus()) {
-
-        }
     }
 
     @Override

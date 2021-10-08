@@ -20,15 +20,15 @@ enum MusicType {
 }
 
 public class BackgroundMusic  {
-    private static MediaPlayer player;
+    private static MediaPlayer backgroundPlayer;
     private static MediaPlayer singlePlayer;
     private static boolean muted = false;
     private static MusicState playerState = MusicState.OFF;
 
     public static void startBackgroundMusic(Context context){
-        if(player == null) {
-            player = MediaPlayer.create(context, R.raw.bkg);
-            player.setLooping(true);
+        if(backgroundPlayer == null) {
+            backgroundPlayer = MediaPlayer.create(context, R.raw.bkg);
+            backgroundPlayer.setLooping(true);
         }
 
         startBackgroundMusic();
@@ -36,8 +36,8 @@ public class BackgroundMusic  {
     }
 
     public static void startBackgroundMusic() {
-        if(player != null && !muted && playerState != MusicState.STARTED) {
-            player.start();
+        if(backgroundPlayer != null && !muted && playerState != MusicState.STARTED) {
+            backgroundPlayer.start();
             playerState = MusicState.STARTED;
         }
     }
@@ -45,7 +45,7 @@ public class BackgroundMusic  {
     public static void pauseBackgroundMusic() {
         if(playerState != MusicState.PAUSED) {
             playerState = MusicState.PAUSED;
-            player.pause();
+            backgroundPlayer.pause();
         }
     }
 
@@ -73,9 +73,25 @@ public class BackgroundMusic  {
         }
     }
 
+    public static void changeMuteState() {
+        muted = !muted;
+        if(muted) {
+            pauseBackgroundMusic();
+        } else {
+            startBackgroundMusic();
+        }
+    }
+
+    public static void stopBackgroundMusic() {
+        if(backgroundPlayer != null) {
+            backgroundPlayer.pause();
+            disposePlayer();
+        }
+    }
+
     private static void playSingleMusic(Context context, MusicType musicType) {
-        player.pause();
-        final int location = player.getCurrentPosition();
+        backgroundPlayer.pause();
+        final int location = backgroundPlayer.getCurrentPosition();
         switch (musicType) {
             case WINNING: {
                 singlePlayer = MediaPlayer.create(context, R.raw.victory);
@@ -99,10 +115,20 @@ public class BackgroundMusic  {
             public void onCompletion(MediaPlayer mp) {
                 mp.release();
                 mp = null;
-                player.seekTo(location);
-                player.start();
+                backgroundPlayer.seekTo(location);
+                backgroundPlayer.start();
             }
         });
         singlePlayer.start();
+    }
+
+    private static void disposePlayer() {
+        try {
+            backgroundPlayer.stop();
+            backgroundPlayer.release();
+        }
+        finally {
+            backgroundPlayer = null;
+        }
     }
 }

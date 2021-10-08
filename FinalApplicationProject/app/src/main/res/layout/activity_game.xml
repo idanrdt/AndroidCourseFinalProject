@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/ic_svb"
+    android:layoutDirection="ltr"
     tools:context=".GameActivity">
 
     <com.idanandben.finalapplicationproject.widgets.PeriodicTableView
