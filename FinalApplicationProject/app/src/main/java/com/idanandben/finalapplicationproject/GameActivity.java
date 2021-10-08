@@ -160,21 +160,21 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private ArrayList<BankTableBlock> prepareStage1(ArrayList<TableElementBlock> blockElements, ElementCollection collection){
-        Random rand = new Random();
         ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
-        int bankAmount = ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
-        int rndAmount = 0;
+        int maxBankAmount = ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
+        int bankAmount = 0;
+        boolean getFromWanted = userSettings.getDifficulty() > 2;
 
         Collections.shuffle(blockElements);
 
         for(TableElementBlock block : blockElements) {
-            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) && /*rand.nextInt(2) == 1 &&*/
-                    collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) {
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) &&
+                    (collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) || getFromWanted) {
 
-                rndAmount++;
+                bankAmount++;
                 BankTableBlock bank = new BankTableBlock(block.getElementSymbol(), block.getElementSymbol());
                 bank.setRow(9);
-                bank.setCol(rndAmount);
+                bank.setCol(bankAmount);
 
                 if(userSettings.getDifficulty() == 1) {
                     bank.setColor(block.getColor());
@@ -188,7 +188,7 @@ public class GameActivity extends AppCompatActivity {
                 block.setVisibility(false);
             }
 
-            if(rndAmount == bankAmount) {
+            if(bankAmount == maxBankAmount) {
                 break;
             }
         }
@@ -198,6 +198,7 @@ public class GameActivity extends AppCompatActivity {
 
     private ArrayList<BankTableBlock> prepareStage2(ArrayList<TableElementBlock> tableElements, ElementCollection collection) {
         ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
+        String[] familyNames = collection.getFamilyNames();
         int bankAmount = ConstProperties.COLOR_GROUPS_BY_DIFFICULTY_LEVEL2[userSettings.getDifficulty() - 1];
 
         ArrayList<Integer> colorsID = new ArrayList<>(collection.getColorMap().keySet());
@@ -205,7 +206,7 @@ public class GameActivity extends AppCompatActivity {
         Collections.shuffle(colorsID);
 
         for(int i = 0; i < bankAmount; i++) {
-            BankTableBlock bank = new BankTableBlock(ConstProperties.ELEMENTS_FAMILY_NAMES[colorsID.get(i)], "");
+            BankTableBlock bank = new BankTableBlock(familyNames[colorsID.get(i)], "");
             bank.setRow(9);
             bank.setCol(i);
             bank.setColor(collection.getColorMap().get(colorsID.get(i)));
@@ -224,25 +225,25 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private ArrayList<BankTableBlock> prepareStage3(ArrayList<TableElementBlock> blockElements, ElementCollection collection) {
-        Random rand = new Random();
         ArrayList<BankTableBlock> bankBlocks = new ArrayList<>();
-        int bankAmount =  ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
-        int rndAmount = 0;
+        int maxBankAmount =  ConstProperties.BLOCK_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
+        int bankAmount = 0;
+        boolean getFromWanted = userSettings.getDifficulty() > 2;
 
         Collections.shuffle(blockElements);
 
         for(TableElementBlock block : blockElements) {
-            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) /*&& rand.nextInt(3) == 1*/ &&
-                    collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) {
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) &&
+                    (collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) || getFromWanted) {
 
-                rndAmount++;
+                bankAmount++;
                 BankTableBlock bank = new BankTableBlock(block.getElementName(), block.getElementSymbol());
-                if(rndAmount <= 8) {
+                if(bankAmount <= 8) {
                     bank.setRow(8);
-                    bank.setCol(rndAmount);
+                    bank.setCol(bankAmount);
                 } else {
                     bank.setRow(9);
-                    bank.setCol(rndAmount - 8);
+                    bank.setCol(bankAmount - 8);
                 }
 
                 if(userSettings.getDifficulty() == 1) {
@@ -254,7 +255,7 @@ public class GameActivity extends AppCompatActivity {
                 bankBlocks.add(bank);
             }
 
-            if(rndAmount == bankAmount) {
+            if(bankAmount == maxBankAmount) {
                 break;
             }
         }
@@ -266,7 +267,7 @@ public class GameActivity extends AppCompatActivity {
         tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
             @Override
             public void onCorrectElementPlaced() {
-                pointsAmount ++;
+                pointsAmount += ConstProperties.POINTS_MULTIPLIER_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
                 pointsTextView.setText("Points: "+ pointsAmount);
             }
 
@@ -485,6 +486,5 @@ public class GameActivity extends AppCompatActivity {
             BackgroundMusic.pauseBackgroundMusic();
         }
         super.onTrimMemory(level);
-
     }
 }

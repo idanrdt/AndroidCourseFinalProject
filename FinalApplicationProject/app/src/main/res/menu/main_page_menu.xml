@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="About"
+        android:title="@string/about_main_menu_title"
         android:id="@+id/about"
         android:icon="@drawable/ic_baseline_info_24"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:title="Background Music"
+        android:title="@string/background_music_main_menu_title"
         android:id="@+id/music"
         android:checkable="true"
         android:icon="@drawable/ic_baseline_music_off_24"/>

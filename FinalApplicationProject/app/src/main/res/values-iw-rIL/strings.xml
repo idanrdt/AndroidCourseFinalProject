@@ -97,4 +97,26 @@
     <string name="exit_confirmation">האם לצאת?</string>
     <string name="clear_all_string">מחיקת הכל</string>
     <string name="clear_all_confirmation">האם למחוק את הכל?</string>
+    <string name="names_score_column_header">שם</string>
+    <string name="score_score_coloumn_header">ניקוד</string>
+    <string name="clear_all_score_button">מחיקת הטבלה</string>
+    <string name="custom_game_main_button">מותאים אישית</string>
+    <string name="leaderboard_main_button">תוצאות</string>
+    <string name="quick_start_main_button">משחק מהיר</string>
+    <string name="background_music_main_menu_title">מוזיקת רקע</string>
+    <string name="about_main_menu_title">עלינו</string>
+    <string name="select_a_level_to_begin_main_fragment_button">יש לבחור שלב התחלה</string>
+    <string name="difficulty_selector">בחירת רמת קושי</string>
+    <string name="easy_difficulty">קל</string>
+    <string name="medium_difficulty">בינוני</string>
+    <string name="hard_difficulty">קשה</string>
+    <string name="element_family_name_none">ללא</string>
+    <string name="element_family_name_noble_gas">גזים אצילים</string>
+    <string name="element_family_name_alkali_metal">מתכות אלקליות</string>
+    <string name="element_family_name_non_Metal">אל מתכתיים</string>
+    <string name="element_family_name_alkaline_earth">מתכות אלקאלי-עפרוריות</string>
+    <string name="element_family_name_semi_metal">מתכות למחצה</string>
+    <string name="element_family_name_halogen_gas">גזים הלוגנים</string>
+    <string name="element_family_name_transition_metal">מתכות מעבר</string>
+    <string name="element_family_name_basic_metal">מתכות מעבר-עמידות</string>
 </resources>

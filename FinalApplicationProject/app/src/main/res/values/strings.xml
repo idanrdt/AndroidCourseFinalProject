@@ -96,4 +96,26 @@
     <string name="exit_confirmation">Are you sure you want to exit?</string>
     <string name="clear_all_string">clear all</string>
     <string name="clear_all_confirmation">Are you sure you want to clear board?</string>
+    <string name="names_score_column_header">Name</string>
+    <string name="score_score_coloumn_header">Score</string>
+    <string name="clear_all_score_button">Clear All</string>
+    <string name="quick_start_main_button">Quick Start</string>
+    <string name="custom_game_main_button">Custom Game</string>
+    <string name="leaderboard_main_button">Leaderboard</string>
+    <string name="background_music_main_menu_title">Background Music</string>
+    <string name="about_main_menu_title">About</string>
+    <string name="select_a_level_to_begin_main_fragment_button">Select a level to begin</string>
+    <string name="difficulty_selector">Select Difficulty</string>
+    <string name="easy_difficulty">Easy</string>
+    <string name="medium_difficulty">Medium</string>
+    <string name="hard_difficulty">Hard</string>
+    <string name="element_family_name_none">None</string>
+    <string name="element_family_name_non_Metal">Non Metal</string>
+    <string name="element_family_name_noble_gas">Noble Gases</string>
+    <string name="element_family_name_alkali_metal">Alkali Metal</string>
+    <string name="element_family_name_alkaline_earth">Alkaline Earth</string>
+    <string name="element_family_name_semi_metal">Semi Metal</string>
+    <string name="element_family_name_halogen_gas">Halogen Gases</string>
+    <string name="element_family_name_basic_metal">Basic Metal</string>
+    <string name="element_family_name_transition_metal">Transition Metal</string>
 </resources>

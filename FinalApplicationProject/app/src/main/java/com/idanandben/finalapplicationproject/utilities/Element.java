@@ -11,7 +11,7 @@ public class Element {
     public final int colorGroup;
     public final String familyName;
 
-    public Element(int atomicNumber, String symbol, String name, int period, int group, double weight, int colorGroup) {
+    public Element(int atomicNumber, String symbol, String name, int period, int group, double weight, int colorGroup, String familyName) {
         this.atomicNumber = atomicNumber;
         this.symbol = symbol;
         this.name = name;
@@ -19,7 +19,6 @@ public class Element {
         this.group = group;
         this.weight = weight;
         this.colorGroup = colorGroup;
-        this.familyName = ConstProperties.ELEMENTS_FAMILY_NAMES[colorGroup];
-
+        this.familyName = familyName;
     }
 }

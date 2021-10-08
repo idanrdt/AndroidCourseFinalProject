@@ -3,14 +3,19 @@ package com.idanandben.finalapplicationproject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter;
+import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 
 import java.util.ArrayList;
@@ -31,7 +36,6 @@ public class ScoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
-        Button clearButton=findViewById(R.id.leaderboard_button_clear_all);
         prefs = getSharedPreferences(ConstProperties.USERS_TABLE, Context.MODE_PRIVATE);
         Set<String> userScores = prefs.getStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>());
 
@@ -44,16 +48,6 @@ public class ScoreActivity extends AppCompatActivity {
             playersScore.put(score, playerName);
         }
 
-        clearButton.setOnClickListener(v -> {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScoreActivity.this);
-            dialogBuilder.setTitle(R.string.clear_all_string);
-            dialogBuilder.setMessage(R.string.clear_all_confirmation);
-            dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> confirmDelete());
-            dialogBuilder.setNegativeButton(R.string.no_string, null);
-            AlertDialog endDialog = dialogBuilder.create();
-            endDialog.show();
-        });
-
         players = new ArrayList<>(playersScore.values());
         scores = new ArrayList<>(playersScore.keySet());
 
@@ -65,6 +59,29 @@ public class ScoreActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.score_page_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.clear_all_menu_button) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ScoreActivity.this);
+            dialogBuilder.setTitle(R.string.clear_all_string);
+            dialogBuilder.setMessage(R.string.clear_all_confirmation);
+            dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> confirmDelete());
+            dialogBuilder.setNegativeButton(R.string.no_string, null);
+            AlertDialog endDialog = dialogBuilder.create();
+            endDialog.show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     public void confirmDelete(){
         players.clear();
         scores.clear();
@@ -79,5 +96,13 @@ public class ScoreActivity extends AppCompatActivity {
     public void onBackPressed() {
         finish();
         super.onBackPressed();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        if(level == TRIM_MEMORY_BACKGROUND || level == TRIM_MEMORY_UI_HIDDEN) {
+            BackgroundMusic.pauseBackgroundMusic();
+        }
+        super.onTrimMemory(level);
     }
 }

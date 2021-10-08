@@ -90,14 +90,11 @@ public class CustomGameFragment extends Fragment {
         selectedLevel = Integer.parseInt((button.getText().toString()));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Select Difficulty");
+        builder.setTitle(R.string.difficulty_selector);
 
-        builder.setItems(ConstProperties.DIFFICULTIES, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                gameSelectedListener.onLevelSelectedListener(selectedLevel, ++which);
-            }
-        });
+        String[] difficulties = new String[] { getString(R.string.easy_difficulty), getString(R.string.medium_difficulty), getString(R.string.hard_difficulty) };
+
+        builder.setItems(difficulties, (dialog, which) -> gameSelectedListener.onLevelSelectedListener(selectedLevel, ++which));
 
         AlertDialog dialog = builder.create();
         dialog.show();
