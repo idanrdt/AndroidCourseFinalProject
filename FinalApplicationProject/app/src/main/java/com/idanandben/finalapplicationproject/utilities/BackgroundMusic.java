@@ -25,13 +25,9 @@ public class BackgroundMusic  {
     private static boolean muted = false;
     private static MusicState playerState = MusicState.OFF;
 
-    public static void startBackgroundMusic(Context context){
-        if(backgroundPlayer == null) {
-            backgroundPlayer = MediaPlayer.create(context, R.raw.bkg);
-            backgroundPlayer.setLooping(true);
-        }
-
-        startBackgroundMusic();
+    public static void initializeBackgroundMusic(Context context) {
+        backgroundPlayer = MediaPlayer.create(context, R.raw.bkg);
+        backgroundPlayer.setLooping(true);
         playerState = MusicState.PREPARED;
     }
 
@@ -73,8 +69,8 @@ public class BackgroundMusic  {
         }
     }
 
-    public static void changeMuteState() {
-        muted = !muted;
+    public static void setMuteState(boolean isMuted) {
+        muted = isMuted;
         if(muted) {
             pauseBackgroundMusic();
         } else {
@@ -82,10 +78,11 @@ public class BackgroundMusic  {
         }
     }
 
-    public static void stopBackgroundMusic() {
+    public static void stopAndDisposeBackgroundMusic() {
         if(backgroundPlayer != null) {
             backgroundPlayer.pause();
             disposePlayer();
+            playerState = MusicState.OFF;
         }
     }
 

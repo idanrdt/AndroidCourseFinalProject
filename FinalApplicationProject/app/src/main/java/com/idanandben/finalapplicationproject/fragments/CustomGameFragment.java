@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.idanandben.finalapplicationproject.R;
-import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 
 public class CustomGameFragment extends Fragment {
@@ -43,14 +42,14 @@ public class CustomGameFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        preferences = getActivity().getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences(ConstProperties.USERS_TABLE, Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.new_custom_game_fragment, container, false);
         levelsLayout = fragmentView.findViewById(R.id.levels_layout);
-        maxAllowedLevel = preferences.getInt(ConstProperties.MAX_ALLOWED_LEVEL_MSG, 1);
+        maxAllowedLevel = preferences.getInt(ConstProperties.MAX_ALLOWED_LEVEL_PREFERENCES, 1);
         addButtons();
 
         return fragmentView;

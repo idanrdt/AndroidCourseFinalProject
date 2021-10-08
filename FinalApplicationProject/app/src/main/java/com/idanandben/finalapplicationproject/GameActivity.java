@@ -2,7 +2,6 @@ package com.idanandben.finalapplicationproject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.DisplayMetrics;
@@ -57,7 +56,7 @@ public class GameActivity extends AppCompatActivity {
         tableView = findViewById(R.id.tableView);
         instructionsTextView = findViewById(R.id.instruction_label);
 
-        prefs = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, MODE_PRIVATE);
+        prefs = getSharedPreferences(ConstProperties.USERS_TABLE, MODE_PRIVATE);
 
         saveInstanceInPreferences();
 
@@ -335,14 +334,14 @@ public class GameActivity extends AppCompatActivity {
     private void showNameInsertDialog(){
         NameInsertDialog dialog = new NameInsertDialog(this);
         SharedPreferences.Editor edit = prefs.edit();
-        Set<String> scores = new HashSet<>(prefs.getStringSet(ConstProperties.SCORES, new HashSet<>()));
+        Set<String> scores = new HashSet<>(prefs.getStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>()));
 
         dialog.setDoneButtonListener(name -> {
             String nameScoreBuilder = name +
                     " " +
                     userSettings.getScore();
             scores.add(nameScoreBuilder);
-            edit.putStringSet(ConstProperties.SCORES, scores).apply();
+            edit.putStringSet(ConstProperties.SCORES_PREFERENCES, scores).apply();
             initializeScoreBoard();
         });
 
@@ -428,11 +427,11 @@ public class GameActivity extends AppCompatActivity {
 
     private void saveInstanceInPreferences() {
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putInt(ConstProperties.CURRENT_LEVEL_MSG, userSettings.getCurrentLevel())
-                .putInt(ConstProperties.CURRENT_DIFFICULTY_MSG, userSettings.getDifficulty());
+        prefsEditor.putInt(ConstProperties.CURRENT_LEVEL_PREFERENCES, userSettings.getCurrentLevel())
+                .putInt(ConstProperties.CURRENT_DIFFICULTY_PREFERENCES, userSettings.getDifficulty());
 
-        if(prefs.getInt(ConstProperties.MAX_ALLOWED_LEVEL_MSG, 1) < userSettings.getCurrentLevel()) {
-            prefsEditor.putInt(ConstProperties.MAX_ALLOWED_LEVEL_MSG, userSettings.getCurrentLevel());
+        if(prefs.getInt(ConstProperties.MAX_ALLOWED_LEVEL_PREFERENCES, 1) < userSettings.getCurrentLevel()) {
+            prefsEditor.putInt(ConstProperties.MAX_ALLOWED_LEVEL_PREFERENCES, userSettings.getCurrentLevel());
         }
 
         prefsEditor.apply();

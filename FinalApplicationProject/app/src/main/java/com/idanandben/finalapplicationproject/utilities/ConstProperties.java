@@ -2,11 +2,13 @@ package com.idanandben.finalapplicationproject.utilities;
 
 public class ConstProperties {
     public static String USER_SETTINGS_MSG = "UserSettings";
-    public static String USERS_TABLE_MSG = "UsersTable";
-    public static String CURRENT_LEVEL_MSG = "CurrentLevel";
-    public static String CURRENT_DIFFICULTY_MSG = "CurrentDifficulty";
-    public static String MAX_ALLOWED_LEVEL_MSG = "MaxAllowedLevel";
-    public static String SCORES = "Scores";
+
+    public static String USERS_TABLE = "UsersTable";
+    public static String CURRENT_LEVEL_PREFERENCES = "CurrentLevel";
+    public static String CURRENT_DIFFICULTY_PREFERENCES = "CurrentDifficulty";
+    public static String MAX_ALLOWED_LEVEL_PREFERENCES = "MaxAllowedLevel";
+    public static String SCORES_PREFERENCES = "Scores";
+    public static String MUSIC_ENABLE_PREFERENCES = "MusicEnable";
 
     public static String[] DIFFICULTIES = new String[] {"Easy", "Medium" ,"Hard"};
 

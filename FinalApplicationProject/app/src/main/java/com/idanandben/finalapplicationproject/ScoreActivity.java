@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter;
-import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 
 import java.util.ArrayList;
@@ -33,8 +32,8 @@ public class ScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
         Button clearButton=findViewById(R.id.leaderboard_button_clear_all);
-        prefs = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
-        Set<String> userScores = prefs.getStringSet(ConstProperties.SCORES, new HashSet<>());
+        prefs = getSharedPreferences(ConstProperties.USERS_TABLE, Context.MODE_PRIVATE);
+        Set<String> userScores = prefs.getStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>());
 
         Map<Integer, String> playersScore = new TreeMap<>(Collections.reverseOrder());
 
@@ -73,7 +72,7 @@ public class ScoreActivity extends AppCompatActivity {
 
         //Remove from Shared Preferences
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putStringSet(ConstProperties.SCORES, new HashSet<>()).apply();
+        prefsEditor.putStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>()).apply();
     }
 
 

@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Element\'s Table</string>
-    <string name="help">Help</string>
-    <string name="about">About</string>
-    <string name="music">music</string>
     <string name="element_H">Hydrogen</string>
     <string name="element_He">Helium</string>
     <string name="element_Li">Lithium</string>

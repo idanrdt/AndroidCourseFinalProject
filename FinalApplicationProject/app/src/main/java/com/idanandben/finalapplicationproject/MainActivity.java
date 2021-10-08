@@ -1,13 +1,13 @@
 package com.idanandben.finalapplicationproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,34 +24,51 @@ public class MainActivity extends AppCompatActivity {
     //add instructions(VISAULIATY&TEXT)
     //add gifs
     //think about timer trail
-    //PPT-idan&ben
+    //PPT-idan & ben
     //poster-idan
+
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BackgroundMusic.startBackgroundMusic(this);
+        BackgroundMusic.initializeBackgroundMusic(getApplicationContext());
+        prefs = getSharedPreferences(ConstProperties.USERS_TABLE, MODE_PRIVATE);
         showMainMenu();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);    }
+        inflater.inflate(R.menu.main_page_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        for(int i = 0; i < menu.size(); i++) {
+            if(menu.getItem(i).getItemId() == R.id.music) {
+                menu.getItem(i).setChecked(prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, true));
+            }
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         boolean result;
 
         switch (item.getItemId()) {
             case R.id.about:
                 Toast.makeText(MainActivity.this,"Powered by Ben Machlev & Idan Arditi",Toast.LENGTH_LONG).show();
-                 result = true;
-                 break;
+                result = true;
+                break;
             case R.id.music:
-                BackgroundMusic.changeMuteState();
+                boolean muted = item.isChecked();
+                BackgroundMusic.setMuteState(muted);
+                prefs.edit().putBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, !muted).apply();
                 result = true;
                 break;
             default:
@@ -80,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
                 .replace(R.id.fragment_container, mainMenuFragment).addToBackStack(null).commit();
+
     }
 
     private void startGame(UserSettings settings) {
@@ -124,9 +142,9 @@ public class MainActivity extends AppCompatActivity {
         dialogBuilder.setTitle("Exit");
         dialogBuilder.setMessage("Are you sure you want to exit?");
         dialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
-            BackgroundMusic.stopBackgroundMusic();
+            BackgroundMusic.stopAndDisposeBackgroundMusic();
             finish();
-                });
+        });
         dialogBuilder.setNegativeButton("No", null);
         AlertDialog endDialog = dialogBuilder.create();
         endDialog.show();
