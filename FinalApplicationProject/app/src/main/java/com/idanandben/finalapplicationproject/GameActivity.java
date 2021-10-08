@@ -442,9 +442,9 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
-            BackgroundMusic.onPause();
-            finish();
+        if (hasWindowFocus() && BackgroundMusic.isPlaying()) {
+            BackgroundMusic.onStop();
+            //finish();
         }
 
     }

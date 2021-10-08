@@ -19,12 +19,8 @@ import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
 
-    //uiux - main screen-Ben
-    //leaderboard->resetscore->confirmation
-    //music - change string to enum
     //level 3 - idan
     //add dialog between levels
-    //change colors
     //add translation
     //add instructions(VISAULIATY&TEXT)
     //add gifs
@@ -139,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!hasWindowFocus() && BackgroundMusic.isPlaying()) {
+        if (hasWindowFocus() && BackgroundMusic.isPlaying()) {
             BackgroundMusic.onPause();
         }
     }

@@ -25,6 +25,11 @@ import java.util.TreeMap;
 
 public class ScoreActivity extends AppCompatActivity {
     private ScoreViewAdapter adapter;
+    private Map<Integer, String> playersScore;
+    private Set<String> userScores;
+    private List<String> players;
+    private List<Integer> scores;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +37,9 @@ public class ScoreActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score);
         Button clearbutton=findViewById(R.id.clearleader);
         SharedPreferences preferences = getSharedPreferences(ConstProperties.USERS_TABLE_MSG, Context.MODE_PRIVATE);
-        Set<String> userScores = preferences.getStringSet(ConstProperties.SCORES, new HashSet<>());
+        userScores = preferences.getStringSet(ConstProperties.SCORES, new HashSet<>());
 
-        Map<Integer, String> playersScore = new TreeMap<>(Collections.reverseOrder());
+        playersScore = new TreeMap<>(Collections.reverseOrder());
         for (String userScore : userScores) {
             String playerName = userScore.substring(0, userScore.indexOf(" "));
             Integer score = Integer.parseInt(userScore.substring(userScore.indexOf(" ") + 1));
@@ -48,14 +53,14 @@ public class ScoreActivity extends AppCompatActivity {
                 dialogBuilder.setTitle("clear all");
                 dialogBuilder.setMessage("Are you sure you want to clear board?");
                 onDestroy();
-                dialogBuilder.setPositiveButton("Yes", (dialog, which) -> confirmDelete(userScores,playersScore));
+                dialogBuilder.setPositiveButton("Yes", (dialog, which) -> confirmDelete());
                 dialogBuilder.setNegativeButton("No", null);
                 AlertDialog endDialog = dialogBuilder.create();
                 endDialog.show();
             }
         });
-        List<String> players = new ArrayList<>(playersScore.values());
-        List<Integer> scores = new ArrayList<>(playersScore.keySet());
+        players = new ArrayList<>(playersScore.values());
+        scores = new ArrayList<>(playersScore.keySet());
 
         RecyclerView recyclerView = findViewById(R.id.leader);
 
@@ -65,12 +70,12 @@ public class ScoreActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
     }
-    public void confirmDelete(Set<String> userScores, Map<Integer, String> playersScore){
-
+    public void confirmDelete(){
         userScores.clear();
         playersScore.clear();
+        players.clear();
+        scores.clear();
         adapter.notifyDataSetChanged();
-
     }
 
 
