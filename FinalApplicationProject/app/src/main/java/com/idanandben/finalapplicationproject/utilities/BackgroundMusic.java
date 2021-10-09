@@ -2,6 +2,7 @@ package com.idanandben.finalapplicationproject.utilities;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.idanandben.finalapplicationproject.R;
 
@@ -26,9 +27,11 @@ public class BackgroundMusic  {
     private static MusicState playerState = MusicState.OFF;
 
     public static void initializeBackgroundMusic(Context context) {
-        backgroundPlayer = MediaPlayer.create(context, R.raw.bkg);
-        backgroundPlayer.setLooping(true);
-        playerState = MusicState.PREPARED;
+        if(backgroundPlayer == null) {
+            backgroundPlayer = MediaPlayer.create(context, R.raw.bkg);
+            backgroundPlayer.setLooping(true);
+            playerState = MusicState.PREPARED;
+        }
     }
 
     public static void startBackgroundMusic() {

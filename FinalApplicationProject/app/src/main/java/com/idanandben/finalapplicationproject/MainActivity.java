@@ -42,16 +42,18 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_page_menu, menu);
+
+        for(int i = 0; i < menu.size(); i++) {
+            if(menu.getItem(i).getItemId() == R.id.music) {
+                boolean muted = prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, true);
+                menu.getItem(i).setChecked(!muted);
+            }
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        for(int i = 0; i < menu.size(); i++) {
-            if(menu.getItem(i).getItemId() == R.id.music) {
-                menu.getItem(i).setChecked(prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, true));
-            }
-        }
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -67,8 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.music:
                 boolean muted = item.isChecked();
+                prefs.edit().putBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, muted).apply();
                 BackgroundMusic.setMuteState(muted);
-                prefs.edit().putBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, !muted).apply();
+                item.setChecked(!muted);
                 result = true;
                 break;
             default:
@@ -122,19 +125,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
                 .add(R.id.fragment_container, customGameFragment).addToBackStack(null).commit();
     }
+
     private void leaderboard(){
         Intent intent = new Intent(this, ScoreActivity.class);
         startActivity(intent);
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(!(getSupportFragmentManager().findFragmentById(R.id.fragment_container) instanceof MainMenuFragment)) {
-            showMainMenu();
-        } else {
-            showExitDialog();
-        }
     }
 
     private void showExitDialog() {
@@ -151,8 +146,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(!(getSupportFragmentManager().findFragmentById(R.id.fragment_container) instanceof MainMenuFragment)) {
+            showMainMenu();
+        } else {
+            showExitDialog();
+        }
+    }
+
+    @Override
     protected void onResume() {
         BackgroundMusic.startBackgroundMusic();
+        BackgroundMusic.setMuteState(prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, true));
         super.onResume();
     }
 

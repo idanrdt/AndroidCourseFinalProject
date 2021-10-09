@@ -279,7 +279,7 @@ public class PeriodicTableView extends View {
             drawingCursor.bottom -=  boxSize / 4;
             drawingCursor.left += boxSize;
             canvas.drawText(bank.getName().substring(bank.getName().indexOf(" ")), drawingCursor.left, drawingCursor.bottom, legendPaint);
-            drawingCursor.bottom -= weightPaint.getTextSize();
+            drawingCursor.bottom -= (int)weightPaint.getTextSize() * 1.5;
             canvas.drawText(bank.getName().substring(0, bank.getName().indexOf(" ")), drawingCursor.left, drawingCursor.bottom, legendPaint);
         }
     }
