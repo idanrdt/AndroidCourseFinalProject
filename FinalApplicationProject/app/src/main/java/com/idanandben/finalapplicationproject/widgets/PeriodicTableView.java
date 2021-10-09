@@ -234,6 +234,8 @@ public class PeriodicTableView extends View {
             }
         }
 
+        float previousStrokeWidth = blockStroke.getStrokeWidth();
+
         if(selectedBlock != null) {
             boxSize += 15;
             drawingCursor.right = selectedBlock.getLocationY() + boxSize;
@@ -242,7 +244,7 @@ public class PeriodicTableView extends View {
             drawingCursor.top = selectedBlock.getLocationX() - boxSize;
 
             blockPaint.setColor(selectedBlock.getColor());
-            blockStroke.setStrokeWidth(30);
+            blockStroke.setStrokeWidth(previousStrokeWidth * 15);
 
             canvas.drawRect(drawingCursor, blockStroke);
 
@@ -257,7 +259,8 @@ public class PeriodicTableView extends View {
             canvas.drawText(String.valueOf(selectedBlock.getBlockWeight()), drawingCursor.left + tableBlockSize / 2f,
                     drawingCursor.bottom - tableBlockSize / 20f, weightPaint);
         }
-        blockStroke.setStrokeWidth(2);
+
+        blockStroke.setStrokeWidth(previousStrokeWidth);
 
 
         if(bankTargets.size() == 0) {
@@ -457,11 +460,11 @@ public class PeriodicTableView extends View {
                 break;
             }
             case 2: {
-                bankBlockSize = (int)(tableBlockSize * 1.5);
+                bankBlockSize = (int)(tableBlockSize * 2.5);
                 break;
             }
             case 3: {
-                bankBlockSize = tableBlockSize * 2;
+                bankBlockSize = (int)(tableBlockSize * 2.3);
                 break;
             }
         }

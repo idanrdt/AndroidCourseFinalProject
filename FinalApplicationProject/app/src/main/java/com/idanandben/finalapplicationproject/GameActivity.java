@@ -208,7 +208,7 @@ public class GameActivity extends AppCompatActivity {
         for(int i = 0; i < bankAmount; i++) {
             BankTableBlock bank = new BankTableBlock(familyNames[colorsID.get(i)], "");
             bank.setRow(9);
-            bank.setCol(i);
+            bank.setCol(i + 1);
             bank.setColor(collection.getColorMap().get(colorsID.get(i)));
             bank.setColorGroup(colorsID.get(i));
             bankBlocks.add(bank);
@@ -312,21 +312,12 @@ public class GameActivity extends AppCompatActivity {
     private void finnishGame(boolean victorious) {
         tableView.setTableEnabled(false);
         timer.cancel();
-        int currentLevel = userSettings.getCurrentLevel();
         if (!victorious) {
             BackgroundMusic.startGameLossMusic(getApplicationContext());
             showLossDialog();
         } else {
             BackgroundMusic.startGameWonMusic(getApplicationContext());
             showWinningDialog();
-            currentLevel++;
-            userSettings.setCurrentStage(currentLevel);
-            saveInstanceInPreferences();
-            if(currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
-                startNewGame();
-            } else {
-                showNameInsertDialog();
-            }
         }
     }
 
@@ -356,18 +347,43 @@ public class GameActivity extends AppCompatActivity {
 
     private void showLossDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
         dialogBuilder.setTitle(R.string.game_over_string);
         dialogBuilder.setMessage(R.string.play_again_string);
-
-        dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> startNewGame());
+        dialogBuilder.setPositiveButton(R.string.yes_string, (dialog, which) -> {
+            userSettings.setScore(0);
+            startNewGame();
+        });
         dialogBuilder.setNegativeButton(R.string.no_string, (dialog, which) -> initializeScoreBoard());
         dialogBuilder.setOnCancelListener(dialog -> finish());
         AlertDialog endDialog = dialogBuilder.create();
+
         endDialog.show();
     }
 
     private void showWinningDialog() {
         userSettings.setScore(pointsAmount);
+        CountDownTimer timer = new CountDownTimer(3500, 3500) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                instructionsTextView.setText("CONGRATULATIONS!");
+                instructionsTextView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFinish() {
+                int currentLevel = userSettings.getCurrentLevel();
+                instructionsTextView.setVisibility(View.GONE);
+                currentLevel++;
+                userSettings.setCurrentStage(currentLevel);
+                saveInstanceInPreferences();
+                if (currentLevel <= ConstProperties.MAX_LEVEL_EXIST) {
+                    startNewGame();
+                } else {
+                    showNameInsertDialog();
+                }
+            }
+        }.start();
     }
 
     private void hideSystemUI() {
