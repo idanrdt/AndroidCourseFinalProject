@@ -266,14 +266,14 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onCorrectElementPlaced() {
                 pointsAmount += ConstProperties.POINTS_MULTIPLIER_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
-                pointsTextView.setText("Points: "+ pointsAmount);
+                pointsTextView.setText(String.format("%s%s", getText(R.string.points_message), pointsAmount));
             }
 
             @Override
             public void onWrongElementPlaced() {
                 BackgroundMusic.startWrongItemPlacedMusic(getApplicationContext());
                 lifeAmount --;
-                lifeTextView.setText("Life: " + lifeAmount);
+                lifeTextView.setText(String.format("%s%s", getText(R.string.life_message), lifeAmount));
                 if(lifeAmount <= 0 ) {
                     finnishGame(false);
                 }
