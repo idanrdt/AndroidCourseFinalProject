@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.idanandben.finalapplicationproject.R;
 
+import java.io.IOException;
+
 enum MusicState {
     PREPARED,
     STARTED,
@@ -91,6 +93,12 @@ public class BackgroundMusic  {
 
     private static void playSingleMusic(Context context, MusicType musicType) {
         backgroundPlayer.pause();
+        if(singlePlayer != null) {
+            try {
+                singlePlayer.stop();
+            } catch (IllegalStateException ignored) {}
+        }
+
         final int location = backgroundPlayer.getCurrentPosition();
         switch (musicType) {
             case WINNING: {
@@ -113,8 +121,8 @@ public class BackgroundMusic  {
         singlePlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mp.release();
-                mp = null;
+                singlePlayer.release();
+                singlePlayer = null;
                 backgroundPlayer.seekTo(location);
                 backgroundPlayer.start();
             }

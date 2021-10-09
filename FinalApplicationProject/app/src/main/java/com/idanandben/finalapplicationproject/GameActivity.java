@@ -366,7 +366,7 @@ public class GameActivity extends AppCompatActivity {
         CountDownTimer timer = new CountDownTimer(3500, 3500) {
             @Override
             public void onTick(long millisUntilFinished) {
-                instructionsTextView.setText("CONGRATULATIONS!");
+                instructionsTextView.setText(getString(R.string.winning_string_info));
                 instructionsTextView.setVisibility(View.VISIBLE);
             }
 
@@ -424,15 +424,15 @@ public class GameActivity extends AppCompatActivity {
         String instructions = "";
         switch (userSettings.getCurrentLevel()) {
             case 1: {
-                instructions = ConstProperties.LEVEL1_INSTRUCTIONS;
+                instructions = getString(R.string.level_1_instructions);
                 break;
             }
             case 2: {
-                instructions = ConstProperties.LEVEL2_INSTRUCTIONS;
+                instructions = getString(R.string.level_2_instructions);
                 break;
             }
             case 3: {
-                instructions = ConstProperties.LEVEL3_INSTRUCTIONS;
+                instructions = getString(R.string.level_3_instructions);
                 break;
             }
         }
@@ -484,9 +484,11 @@ public class GameActivity extends AppCompatActivity {
     private void resetTimers() {
         if(timer != null) {
             timer.cancel();
+            timer = null;
         }
         if(elementSwitchTimer != null) {
             elementSwitchTimer.cancel();
+            elementSwitchTimer = null;
         }
     }
 

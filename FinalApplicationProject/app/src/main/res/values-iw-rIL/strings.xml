@@ -119,4 +119,8 @@
     <string name="element_family_name_halogen_gas">גזים הלוגנים</string>
     <string name="element_family_name_transition_metal">מתכות מעבר</string>
     <string name="element_family_name_basic_metal">מתכות מעבר-עמידות</string>
+    <string name="winning_string_info">כל הכבוד, השלב הושלם!</string>
+    <string name="level_1_instructions">יש להעביר את האלמנטים למקומם המתאים</string>
+    <string name="level_3_instructions">יש להתאם את שם האלמנט לסמלו</string>
+    <string name="level_2_instructions">יש לבחור בשם הקבוצה הנכונה</string>
 </resources>

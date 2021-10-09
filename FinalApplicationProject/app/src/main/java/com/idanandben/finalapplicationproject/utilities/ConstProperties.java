@@ -21,14 +21,4 @@ public class ConstProperties {
 
     public static int MAX_LEVEL_EXIST = 3;
     public static int GENERIC_COLOR = 0xFFFFFFFF;
-
-    //Level 1 constants
-    public static String LEVEL1_INSTRUCTIONS = "Place the elements in their positions";
-
-    //Level 2 constants
-    public static String LEVEL2_INSTRUCTIONS = "Pick the element Family Group";
-
-    //Level 3 constants
-    public static String LEVEL3_INSTRUCTIONS = "Match the element name to their symbol";
-
 }

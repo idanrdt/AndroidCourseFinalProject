@@ -118,4 +118,8 @@
     <string name="element_family_name_halogen_gas">Halogen Gases</string>
     <string name="element_family_name_basic_metal">Basic Metal</string>
     <string name="element_family_name_transition_metal">Transition Metal</string>
+    <string name="winning_string_info">Well done, Level completed!</string>
+    <string name="level_1_instructions">Place the elements in their positions</string>
+    <string name="level_2_instructions">Pick the element Family Group</string>
+    <string name="level_3_instructions">Match the element name to their symbol</string>
 </resources>

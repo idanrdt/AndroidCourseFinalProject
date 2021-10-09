@@ -25,7 +25,6 @@ public class PeriodicTableView extends View {
     private final Paint symbolPaint;
     private final Paint weightPaint;
     private final Paint legendPaint;
-    private final Paint bgPaint = new Paint();
 
     private final Rect drawingCursor = new Rect();
     private final Rect tableRect = new Rect();
@@ -70,7 +69,6 @@ public class PeriodicTableView extends View {
         weightPaint.setSubpixelText(true);
         legendPaint = new Paint(symbolPaint);
 
-        bgPaint.setColor(Color.WHITE);
         blockPaint.setColor(Color.WHITE);
         blockStroke.setStyle(Paint.Style.STROKE);
         blockStroke.setColor(Color.BLACK);
@@ -105,7 +103,7 @@ public class PeriodicTableView extends View {
         } else {
             bankAmount--;
             startBankOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
-            startBankOffset += (bankBlockSize / 2);
+            startBankOffset -= (bankBlockSize / 2);
         }
 
         int startTableOffset = (screenWidth / 2) - (colAmount * (tableBlockSize + colAmount / 2)) / 2;
