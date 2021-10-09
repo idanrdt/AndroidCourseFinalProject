@@ -122,4 +122,8 @@
     <string name="level_1_instructions">Place the elements in their positions</string>
     <string name="level_2_instructions">Pick the element Family Group</string>
     <string name="level_3_instructions">Match the element name to their symbol</string>
+    <string name="time_left_message">"Time Left: "</string>
+    <string name="instructions_main_menu_button">Instructions</string>
+    <string name="points_message">"Points: "</string>
+    <string name="life_message">"Life: "</string>
 </resources>

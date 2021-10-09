@@ -19,8 +19,6 @@ import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
 
-    //add dialog between levels
-    //add translation
     //add instructions(VISAULIATY&TEXT)
     //add gifs
     //think about timer trail
@@ -157,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         BackgroundMusic.startBackgroundMusic();
-        BackgroundMusic.setMuteState(prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, true));
+        BackgroundMusic.setMuteState(prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES,false));
         super.onResume();
     }
 

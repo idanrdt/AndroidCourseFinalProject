@@ -123,4 +123,8 @@
     <string name="level_1_instructions">יש להעביר את האלמנטים למקומם המתאים</string>
     <string name="level_3_instructions">יש להתאם את שם האלמנט לסמלו</string>
     <string name="level_2_instructions">יש לבחור בשם הקבוצה הנכונה</string>
+    <string name="time_left_message">"זמן נותר: "</string>
+    <string name="instructions_main_menu_button">הוראות</string>
+    <string name="points_message">"נקודות: "</string>
+    <string name="life_message">"נסיונות: "</string>
 </resources>

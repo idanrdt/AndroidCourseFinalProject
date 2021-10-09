@@ -24,7 +24,6 @@ import com.idanandben.finalapplicationproject.widgets.TableElementBlock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,7 +72,6 @@ public class GameActivity extends AppCompatActivity {
         resetTimers();
         hideSystemUI();
         loadTable();
-        resetPointsAndLife();
         showInstructions();
     }
 
@@ -85,8 +83,8 @@ public class GameActivity extends AppCompatActivity {
         lifeAmount = ConstProperties.LIFE_AMOUNT_BY_DIFFICULTY[userSettings.getDifficulty() - 1];
 
 
-        pointsTextView.setText("Points: " + pointsAmount);
-        lifeTextView.setText("Life: " + lifeAmount);
+        pointsTextView.setText(String.format("%s%s", getText(R.string.points_message), pointsAmount));
+        lifeTextView.setText(String.format("%s%s", getText(R.string.life_message), lifeAmount));
     }
 
     private void initializeAndStartTimer(int minutes, int seconds) {
@@ -116,8 +114,8 @@ public class GameActivity extends AppCompatActivity {
 
     private String updateTimeMessage(long minutes, long seconds){
         StringBuilder timeMessage = new StringBuilder();
-        timeMessage.append("Time Left: 0");
-        timeMessage.append(minutes).append(":");
+        timeMessage.append(getString(R.string.time_left_message));
+        timeMessage.append("0").append(minutes).append(":");
         if(seconds < 10) {
             timeMessage.append("0");
         }
@@ -412,6 +410,7 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() {
                 instructionsTextView.setVisibility(View.GONE);
                 initializeAndStartTimer(ConstProperties.TIME_MINUTES_BY_DIFFICULTY[userSettings.getDifficulty() - 1],ConstProperties.TIME_SECONDS_BY_DIFFICULTY[userSettings.getDifficulty() - 1]);
+                resetPointsAndLife();
                 tableView.setTableEnabled(true);
                 if(userSettings.getCurrentLevel() == 2) {
                     elementSwitchTimer.start();
