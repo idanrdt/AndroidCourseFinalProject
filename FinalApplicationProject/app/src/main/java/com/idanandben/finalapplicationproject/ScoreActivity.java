@@ -87,7 +87,6 @@ public class ScoreActivity extends AppCompatActivity {
         scores.clear();
         adapter.notifyDataSetChanged();
 
-        //Remove from Shared Preferences
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.putStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>()).apply();
     }

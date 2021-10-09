@@ -14,15 +14,15 @@ public class MainMenuFragment extends Fragment {
 
     private MainMenuButtonsListeners listener;
 
+    /**
+     * Interface for the button listeners.
+     */
     public interface MainMenuButtonsListeners {
         void onQuickStartButtonClicked();
 
         void onCustomGameButtonClicked();
 
         void onLeaderboardClicked();
-    }
-
-    public MainMenuFragment() {
     }
 
     @Override
@@ -46,6 +46,10 @@ public class MainMenuFragment extends Fragment {
         return fragmentView;
     }
 
+    /**
+     * Sets the fragment buttons listeners.
+     * @param listener - The MainMenuButtonsListener interface to inject.
+     */
     public void setButtonListeners(MainMenuButtonsListeners listener) {
         this.listener = listener;
     }

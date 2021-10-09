@@ -29,12 +29,19 @@ public class CustomGameFragment extends Fragment {
 
     private GameSelectedListener gameSelectedListener;
 
+    /**
+     * Interface for the button listeners
+     */
     public interface GameSelectedListener {
         void onLevelSelectedListener(int level, int difficulty);
     }
 
     public CustomGameFragment() {}
 
+    /**
+     * Sets the fragment buttons listeners.
+     * @param listener - TThe GameSelectedListener interface to inject.
+     */
     public void setGameSelectedListener(GameSelectedListener listener) {
         this.gameSelectedListener = listener;
     }
@@ -55,6 +62,9 @@ public class CustomGameFragment extends Fragment {
         return fragmentView;
     }
 
+    /**
+     * Adds the main buttons to the view and connect the listeners.
+     */
     private void addButtons() {
         MaterialButton levelButton;
         int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, getResources().getDisplayMetrics()); //convert dp to px
@@ -84,6 +94,10 @@ public class CustomGameFragment extends Fragment {
         }
     }
 
+    /**
+     * Pops up the difficulty dialog
+     * @param v - The View to display in.
+     */
     private void showDifficultyDialog(View v) {
 
         MaterialButton button = (MaterialButton)v;

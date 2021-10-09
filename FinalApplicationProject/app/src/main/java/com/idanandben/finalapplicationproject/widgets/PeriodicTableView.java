@@ -14,6 +14,9 @@ import androidx.core.view.ViewCompat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles the Periodic Table creation.
+ */
 public class PeriodicTableView extends View {
 
     private final ArrayList<TableElementBlock> tableBlocks = new ArrayList<>();
@@ -39,6 +42,9 @@ public class PeriodicTableView extends View {
 
     private boolean isTableWorking;
 
+    /**
+     * Event interface for the table.
+     */
     public interface TableStateListeners {
         void onCorrectElementPlaced();
         void onWrongElementPlaced();
@@ -75,6 +81,14 @@ public class PeriodicTableView extends View {
         blockStroke.setStrokeWidth(2);
     }
 
+    /**
+     * Initialize the table properties.
+     * @param elementsList - The Periodic Table elements.
+     * @param screenWidth - The current screen width.
+     * @param screenHeight - The current screen height.
+     * @param bankBlocks - The bank blocks.
+     * @param level - The current level.
+     */
     public void initializeTable(List<TableElementBlock> elementsList, int screenWidth, int screenHeight, List<BankTableBlock> bankBlocks, int level) {
         tableBlocks.clear();
         bankTargets.clear();
@@ -89,7 +103,7 @@ public class PeriodicTableView extends View {
         this.level = level;
 
         measureCanvas();
-        int startBankOffset;
+        int bankDrawingOffset;
         int bankAmount;
 
         if(level == 3 && bankBlocks.size() > 8) {
@@ -99,32 +113,42 @@ public class PeriodicTableView extends View {
         }
 
         if(bankAmount % 2 == 0) {
-            startBankOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
+            bankDrawingOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
         } else {
             bankAmount--;
-            startBankOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
-            startBankOffset -= (bankBlockSize / 2);
+            bankDrawingOffset = (screenWidth / 2) - (bankAmount / 2) * (bankBlockSize + bankAmount);
+            bankDrawingOffset -= (bankBlockSize / 2);
         }
 
-        int startTableOffset = (screenWidth / 2) - (colAmount * (tableBlockSize + colAmount / 2)) / 2;
+        int tableDrawingOffset = (screenWidth / 2) - (colAmount * (tableBlockSize + colAmount / 2)) / 2;
 
+        //initialize table
         for(TableElementBlock block : tableBlocks) {
-            block.setLocationY(tableBlockSize * block.getCol() + startTableOffset);
+            block.setLocationY(tableBlockSize * block.getCol() + tableDrawingOffset);
             block.setLocationX(tableBlockSize * block.getRow());
         }
 
+        //initialize bank
         for(BankTableBlock bankBlock : bankTargets) {
-            bankBlock.setLocationY((bankBlockSize / 2) + (bankBlock.getCol() - 1) * bankBlockSize + startBankOffset);
+            bankBlock.setLocationY((bankBlockSize / 2) + (bankBlock.getCol() - 1) * bankBlockSize + bankDrawingOffset);
             bankBlock.setLocationX(tableBlockSize * bankBlock.getRow());
         }
 
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
+    /**
+     * Add listener to table events.
+     * @param listeners - The listener to add.
+     */
     public void addTableListener(TableStateListeners listeners) {
         this.stateListenersList.add(listeners);
     }
 
+    /**
+     * Set if the table is interacting with the user.
+     * @param enabled
+     */
     public void setTableEnabled(boolean enabled) {
         isTableWorking = enabled;
     }
@@ -147,6 +171,10 @@ public class PeriodicTableView extends View {
         }
     }
 
+    /**
+     * Drawing the level 1 table.
+     * @param canvas
+     */
     private void drawLevel1Table(Canvas canvas) {
         int boxSize = tableBlockSize / 2 - 1;
         double symbolOffset = 2.8;
@@ -200,6 +228,10 @@ public class PeriodicTableView extends View {
         }
     }
 
+    /**
+     * Drawing the level 2 table.
+     * @param canvas
+     */
     private void drawLevel2Table(Canvas canvas) {
         int boxSize = tableBlockSize / 2 - 1;
         TableElementBlock selectedBlock = null;
@@ -285,6 +317,10 @@ public class PeriodicTableView extends View {
         }
     }
 
+    /**
+     * Drawing the level 3 table.
+     * @param canvas
+     */
     private void drawLevel3Table(Canvas canvas) {
         int boxSize = tableBlockSize / 2 - 1;
 
@@ -346,6 +382,11 @@ public class PeriodicTableView extends View {
         return true;
     }
 
+    /**
+     * Set the related element to be bigger.
+     * @param symbol - The element symbol.
+     * @param increased - True - Bigger, False - normal state.
+     */
     public void setIncreasedElement(String symbol, boolean increased) {
         for(TableElementBlock block : tableBlocks) {
             if(block.getElementSymbol().equals(symbol)) {
@@ -357,6 +398,10 @@ public class PeriodicTableView extends View {
         invalidate();
     }
 
+    /**
+     * Handles table click event.
+     * @param event - The MotionEvent recived.
+     */
     private void clickTableElement(MotionEvent event) {
         int size = tableBlockSize / 2 + 1;
         TableElementBlock tableBlock = null;
@@ -385,6 +430,10 @@ public class PeriodicTableView extends View {
         }
     }
 
+    /**
+     * Handles the Drag element event.
+     * @param event
+     */
     private void dragBankElement(MotionEvent event) {
         int size = tableBlockSize / 2 + 1;
 
@@ -439,8 +488,11 @@ public class PeriodicTableView extends View {
         }
     }
 
+    /**
+     * Measure the canvas for screen fitting.
+     */
     private void measureCanvas() {
-        final int blockWidth = (int)(tableRect.width() / (colAmount + 3));
+        final int blockWidth = (tableRect.width() / (colAmount + 3));
         final int blockHeight = tableRect.height() / (rowAmount + 3);
         tableBlockSize = Math.min(blockWidth, blockHeight);
 
@@ -451,12 +503,11 @@ public class PeriodicTableView extends View {
         setBankBlockSizeByLevel();
     }
 
+    /**
+     * Set the Bank size
+     */
     private void setBankBlockSizeByLevel() {
         switch(level) {
-            case 1: {
-                bankBlockSize = tableBlockSize;
-                break;
-            }
             case 2: {
                 bankBlockSize = (int)(tableBlockSize * 2.5);
                 break;
@@ -465,9 +516,16 @@ public class PeriodicTableView extends View {
                 bankBlockSize = (int)(tableBlockSize * 2.3);
                 break;
             }
+            default: {
+                bankBlockSize = tableBlockSize;
+                break;
+            }
         }
     }
 
+    /**
+     * Finish the level, remove all elements.
+     */
     private void finalizeTable() {
         tableBlocks.clear();
         bankTargets.clear();

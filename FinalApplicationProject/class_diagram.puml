@@ -1,0 +1,310 @@
+@startuml
+class com.idanandben.finalapplicationproject.utilities.ConstProperties {
++ {static} String USER_SETTINGS_MSG
++ {static} String USERS_TABLE
++ {static} String CURRENT_LEVEL_PREFERENCES
++ {static} String CURRENT_DIFFICULTY_PREFERENCES
++ {static} String MAX_ALLOWED_LEVEL_PREFERENCES
++ {static} String SCORES_PREFERENCES
++ {static} String MUSIC_ENABLE_PREFERENCES
++ {static} int[] LIFE_AMOUNT_BY_DIFFICULTY
++ {static} int[] TIME_MINUTES_BY_DIFFICULTY
++ {static} int[] TIME_SECONDS_BY_DIFFICULTY
++ {static} int[] BLOCK_AMOUNT_BY_DIFFICULTY
++ {static} int[] COLOR_GROUPS_BY_DIFFICULTY_LEVEL2
++ {static} int[] POINTS_MULTIPLIER_BY_DIFFICULTY
++ {static} int MAX_LEVEL_EXIST
++ {static} int GENERIC_COLOR
+}
+class com.idanandben.finalapplicationproject.ScoreActivity {
+- ScoreViewAdapter adapter
+- List<String> players
+- List<Integer> scores
+- SharedPreferences prefs
+# void onCreate(Bundle)
++ boolean onCreateOptionsMenu(Menu)
++ boolean onOptionsItemSelected(MenuItem)
++ void confirmDelete()
++ void onBackPressed()
++ void onTrimMemory(int)
+}
+class com.idanandben.finalapplicationproject.fragments.CustomGameFragment {
+- SharedPreferences preferences
+- LinearLayout levelsLayout
+- int maxAllowedLevel
+- int selectedLevel
+- GameSelectedListener gameSelectedListener
++ void setGameSelectedListener(GameSelectedListener)
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void addButtons()
+- void showDifficultyDialog(View)
+}
+interface com.idanandben.finalapplicationproject.fragments.CustomGameFragment.GameSelectedListener {
+~ void onLevelSelectedListener(int,int)
+}
+class com.idanandben.finalapplicationproject.fragments.MainMenuFragment {
+- MainMenuButtonsListeners listener
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void setButtonListeners(MainMenuButtonsListeners)
+}
+interface com.idanandben.finalapplicationproject.fragments.MainMenuFragment.MainMenuButtonsListeners {
+~ void onQuickStartButtonClicked()
+~ void onCustomGameButtonClicked()
+~ void onLeaderboardClicked()
+}
+class com.idanandben.finalapplicationproject.widgets.NameInsertDialog {
+- ContinueListener doneListener
+- TextInputEditText nameEditText
+- MaterialButton doneButton
+- MaterialButton cancelButton
+# void onCreate(Bundle)
+- boolean validateName(String)
++ void setDoneButtonListener(ContinueListener)
+}
+interface com.idanandben.finalapplicationproject.widgets.NameInsertDialog.ContinueListener {
+~ void onDoneClicked(String)
+}
+class com.idanandben.finalapplicationproject.MainActivity {
+- SharedPreferences prefs
+# void onCreate(Bundle)
++ boolean onCreateOptionsMenu(Menu)
++ boolean onPrepareOptionsMenu(Menu)
++ boolean onOptionsItemSelected(MenuItem)
+- void showMainMenu()
+- void startGame(UserSettings)
+- void startQuickGame()
+- void startCustomGame()
+- void showInstructionsFragment()
+- void showLeaderboard()
+- void showExitDialog()
++ void onBackPressed()
+# void onResume()
++ void onTrimMemory(int)
+}
+class com.idanandben.finalapplicationproject.GameActivity {
+- PeriodicTableView tableView
+- UserSettings userSettings
+- SharedPreferences prefs
+- TextView timeLeftTextView
+- TextView pointsTextView
+- TextView lifeTextView
+- TextView instructionsTextView
+- CountDownTimer timer
+- CountDownTimer elementSwitchTimer
+- int pointsAmount
+- int lifeAmount
+# void onCreate(Bundle)
++ void onBackPressed()
+- void startNewGame()
+- void resetPointsAndLife()
+- void initializeAndStartTimer(int,int)
+- String updateTimeMessage(long,long)
+- void loadTable()
+- ArrayList<BankTableBlock> prepareStage1(ArrayList<TableElementBlock>,ElementCollection)
+- ArrayList<BankTableBlock> prepareStage2(ArrayList<TableElementBlock>,ElementCollection)
+- ArrayList<BankTableBlock> prepareStage3(ArrayList<TableElementBlock>,ElementCollection)
+- void setTableListeners()
+- void finnishGame(boolean)
+- void showNameInsertDialog()
+- void initializeScoreBoard()
+- void showLossDialog()
+- void showWinningDialog()
+- void hideSystemUI()
+- void showInstructions()
+- String getInstructionsForTextView()
+- void saveInstanceInPreferences()
+- void initiateElementsPopup(ArrayList<BankTableBlock>,ElementCollection)
+- void resetTimers()
+# void onPause()
++ void onTrimMemory(int)
+}
+class com.idanandben.finalapplicationproject.widgets.BankTableBlock {
+- String name
+- String symbol
+- String atomicNumber
+- int color
+- int colorGroup
+- int col
+- int row
+- int locationX
+- int locationY
+- int initializedLocationX
+- int initializedLocationY
++ int getCol()
++ void setCol(int)
++ int getRow()
++ void setRow(int)
++ int getLocationX()
++ void setLocationX(int)
++ int getLocationY()
++ void setLocationY(int)
++ int getColor()
++ void setColor(int)
++ String getName()
++ String getSymbol()
++ String getAtomicNumber()
++ void setAtomicNumber(String)
++ int getColorGroup()
++ void setColorGroup(int)
++ int getInitializedLocationX()
++ int getInitializedLocationY()
+}
+class com.idanandben.finalapplicationproject.utilities.UserSettings {
+- int currentStage
+- int maxAllowedStage
+- int difficulty
+- String UserName
+- int score
++ {static} Creator<UserSettings> CREATOR
++ int getCurrentLevel()
++ void setCurrentStage(int)
++ int getDifficulty()
++ void setDifficulty(int)
++ String getUserName()
++ void setUserName(String)
++ int getScore()
++ void setScore(int)
++ int describeContents()
++ void writeToParcel(Parcel,int)
+}
+class com.idanandben.finalapplicationproject.utilities.ElementCollection {
+- Map<Integer,Element> elementMap
+- Map<Integer,Integer> colorMap
+- ArrayList<Integer> wantedList
+- Context context
++ Map<Integer,Element> getElements()
++ Map<Integer,Integer> getColorMap()
++ ArrayList<Integer> getWantedList()
++ String[] getFamilyNames()
+- void createElementMap()
+- void createColorMap()
+- void createWantedList()
+}
+class com.idanandben.finalapplicationproject.widgets.PeriodicTableView {
+- ArrayList<TableElementBlock> tableBlocks
+- ArrayList<BankTableBlock> bankTargets
+- Paint atomicNumberPaint
+- Paint blockPaint
+- Paint blockStroke
+- Paint symbolPaint
+- Paint weightPaint
+- Paint legendPaint
+- Rect drawingCursor
+- Rect tableRect
+- int rowAmount
+- int colAmount
+- int tableBlockSize
+- int bankBlockSize
+- int level
+- BankTableBlock selectedBlock
+- boolean isTableWorking
+- List<TableStateListeners> stateListenersList
++ void initializeTable(List<TableElementBlock>,int,int,List<BankTableBlock>,int)
++ void addTableListener(TableStateListeners)
++ void setTableEnabled(boolean)
+# void onDraw(Canvas)
+- void drawLevel1Table(Canvas)
+- void drawLevel2Table(Canvas)
+- void drawLevel3Table(Canvas)
++ boolean onTouchEvent(MotionEvent)
++ void setIncreasedElement(String,boolean)
+- void clickTableElement(MotionEvent)
+- void dragBankElement(MotionEvent)
+- void measureCanvas()
+- void setBankBlockSizeByLevel()
+- void finalizeTable()
+}
+interface com.idanandben.finalapplicationproject.widgets.PeriodicTableView.TableStateListeners {
+~ void onCorrectElementPlaced()
+~ void onWrongElementPlaced()
+~ void onTableCompleted()
+}
+class com.idanandben.finalapplicationproject.widgets.TableElementBlock {
+- Element element
+- String atomicNumber
+- String weight
+- int col
+- int row
+- int locationX
+- int locationY
+- int color
+- boolean isVisible
++ int getCol()
++ int getRow()
++ int getColor()
++ void setColor(int)
++ int getLocationX()
++ void setLocationX(int)
++ int getLocationY()
++ void setLocationY(int)
++ boolean getVisibility()
++ void setVisibility(boolean)
++ int getColorGroup()
++ String getBlockAtomicNumber()
++ String getBlockWeight()
++ String getElementSymbol()
++ String getElementName()
+}
+class com.idanandben.finalapplicationproject.fragments.InstructionsFragment {
++ void onCreate(Bundle)
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+class com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter {
+- List<String> playerNames
+- List<Integer> playerScores
++ RecyclerViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(ScoreViewAdapter.RecyclerViewHolder,int)
++ int getItemCount()
+}
+class com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter.RecyclerViewHolder {
+- TextView name
+- TextView score
+}
+class com.idanandben.finalapplicationproject.utilities.Element {
++ int atomicNumber
++ String symbol
++ String name
++ int period
++ int group
++ double weight
++ int colorGroup
++ String familyName
+}
+class com.idanandben.finalapplicationproject.utilities.BackgroundMusic {
+- {static} MediaPlayer backgroundPlayer
+- {static} MediaPlayer singlePlayer
+- {static} boolean muted
+- {static} MusicState playerState
++ {static} void initializeBackgroundMusic(Context)
++ {static} void startBackgroundMusic()
++ {static} void pauseBackgroundMusic()
++ {static} void startGameWonMusic(Context)
++ {static} void startGameLossMusic(Context)
++ {static} void startWrongItemPlacedMusic(Context)
++ {static} void startLastSecondsMusic(Context)
++ {static} void setMuteState(boolean)
++ {static} void stopAndDisposeBackgroundMusic()
+- {static} void playSingleMusic(Context,MusicType)
+- {static} void disposePlayer()
+}
+
+
+androidx.appcompat.app.AppCompatActivity <|-- com.idanandben.finalapplicationproject.ScoreActivity
+androidx.fragment.app.Fragment <|-- com.idanandben.finalapplicationproject.fragments.CustomGameFragment
+com.idanandben.finalapplicationproject.fragments.CustomGameFragment +.. com.idanandben.finalapplicationproject.fragments.CustomGameFragment.GameSelectedListener
+androidx.fragment.app.Fragment <|-- com.idanandben.finalapplicationproject.fragments.MainMenuFragment
+com.idanandben.finalapplicationproject.fragments.MainMenuFragment +.. com.idanandben.finalapplicationproject.fragments.MainMenuFragment.MainMenuButtonsListeners
+android.app.Dialog <|-- com.idanandben.finalapplicationproject.widgets.NameInsertDialog
+com.idanandben.finalapplicationproject.widgets.NameInsertDialog +.. com.idanandben.finalapplicationproject.widgets.NameInsertDialog.ContinueListener
+androidx.appcompat.app.AppCompatActivity <|-- com.idanandben.finalapplicationproject.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.idanandben.finalapplicationproject.GameActivity
+android.os.Parcelable <|.. com.idanandben.finalapplicationproject.utilities.UserSettings
+android.view.View <|-- com.idanandben.finalapplicationproject.widgets.PeriodicTableView
+com.idanandben.finalapplicationproject.widgets.PeriodicTableView +.. com.idanandben.finalapplicationproject.widgets.PeriodicTableView.TableStateListeners
+androidx.fragment.app.Fragment <|-- com.idanandben.finalapplicationproject.fragments.InstructionsFragment
+com.idanandben.finalapplicationproject.adapter.Adapter <|-- com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter
+com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter +.. com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter.RecyclerViewHolder
+com.idanandben.finalapplicationproject.adapter.ViewHolder <|-- com.idanandben.finalapplicationproject.adapter.ScoreViewAdapter.RecyclerViewHolder
+@enduml

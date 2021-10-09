@@ -22,12 +22,19 @@ enum MusicType {
     NO_TIME_LEFT,
 }
 
+/**
+ * Handles the music through the application.
+ */
 public class BackgroundMusic  {
     private static MediaPlayer backgroundPlayer;
     private static MediaPlayer singlePlayer;
     private static boolean muted = false;
     private static MusicState playerState = MusicState.OFF;
 
+    /**
+     * Initialize the background music player.
+     * @param context - The application context for initialization.
+     */
     public static void initializeBackgroundMusic(Context context) {
         if(backgroundPlayer == null) {
             backgroundPlayer = MediaPlayer.create(context, R.raw.bkg);
@@ -91,6 +98,11 @@ public class BackgroundMusic  {
         }
     }
 
+    /**
+     * Plays the single music selected. The background music will stop to allow the single to play.
+     * @param context - The application context to initialize the player.
+     * @param musicType - The music to play.
+     */
     private static void playSingleMusic(Context context, MusicType musicType) {
         backgroundPlayer.pause();
         if(singlePlayer != null) {
@@ -118,14 +130,11 @@ public class BackgroundMusic  {
                 break;
             }
         }
-        singlePlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                singlePlayer.release();
-                singlePlayer = null;
-                backgroundPlayer.seekTo(location);
-                backgroundPlayer.start();
-            }
+        singlePlayer.setOnCompletionListener(mp -> {
+            singlePlayer.release();
+            singlePlayer = null;
+            backgroundPlayer.seekTo(location);
+            backgroundPlayer.start();
         });
         singlePlayer.start();
     }

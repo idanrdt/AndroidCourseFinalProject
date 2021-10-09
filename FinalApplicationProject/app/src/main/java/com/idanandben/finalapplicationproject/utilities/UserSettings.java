@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class UserSettings implements Parcelable {
     private int currentStage;
     private final int maxAllowedStage;
-    private int difficulty;
+    private final int difficulty;
     private String UserName;
     private int score;
 
@@ -51,18 +51,6 @@ public class UserSettings implements Parcelable {
 
     public int getDifficulty() {
         return difficulty;
-    }
-
-    public void setDifficulty(int difficulty) {
-        this.difficulty = difficulty;
-    }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public void setUserName(String userName) {
-        UserName = userName;
     }
 
     public int getScore() {

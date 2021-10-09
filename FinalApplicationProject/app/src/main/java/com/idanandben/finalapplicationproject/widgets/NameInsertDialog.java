@@ -16,14 +16,24 @@ public class NameInsertDialog extends Dialog {
     private ContinueListener doneListener;
     private TextInputEditText nameEditText;
     private MaterialButton doneButton;
-    private MaterialButton cancelButton;
 
+    /**
+     * Interface for the button listeners.
+     */
     public interface ContinueListener {
         void onDoneClicked(String name);
     }
 
     public NameInsertDialog(Context context) {
         super(context);
+    }
+
+    /**
+     * Sets the dialog buttons listeners.
+     * @param listener - the ContinueListener interface to inject.
+     */
+    public void setDoneButtonListener(ContinueListener listener) {
+        this.doneListener = listener;
     }
 
     @Override
@@ -36,7 +46,6 @@ public class NameInsertDialog extends Dialog {
         nameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -46,7 +55,6 @@ public class NameInsertDialog extends Dialog {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -55,11 +63,12 @@ public class NameInsertDialog extends Dialog {
         doneButton.setOnClickListener(v -> doneListener.onDoneClicked(nameEditText.getText().toString()));
     }
 
+    /**
+     * Validats the text received.
+     * @param text - The text to check.
+     * @return - If the text validated.
+     */
     private boolean validateName(String text) {
         return !text.isEmpty();
-    }
-
-    public void setDoneButtonListener(ContinueListener listener) {
-        this.doneListener = listener;
     }
 }

@@ -1,8 +1,10 @@
 package com.idanandben.finalapplicationproject.widgets;
 
-import com.idanandben.finalapplicationproject.utilities.ConstProperties;
 import com.idanandben.finalapplicationproject.utilities.Element;
 
+/**
+ * Represent a single Table block for game.
+ */
 public class TableElementBlock {
 
     private final Element element;
@@ -14,10 +16,6 @@ public class TableElementBlock {
     private int locationY;
     private int color;
     private boolean isVisible;
-
-    public TableElementBlock(Element element) {
-        this(element, ConstProperties.GENERIC_COLOR);
-    }
 
     public TableElementBlock(Element element, int color) {
         this.element = element;

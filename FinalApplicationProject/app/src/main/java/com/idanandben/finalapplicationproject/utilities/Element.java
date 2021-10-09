@@ -1,5 +1,8 @@
 package com.idanandben.finalapplicationproject.utilities;
 
+/**
+ * Represent an Element of the Periodic table.
+ */
 public class Element {
 
     public final int atomicNumber;

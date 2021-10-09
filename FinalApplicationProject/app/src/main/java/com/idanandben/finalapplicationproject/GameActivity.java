@@ -124,6 +124,9 @@ public class GameActivity extends AppCompatActivity {
         return String.valueOf(timeMessage);
     }
 
+    /**
+     * Loads and initialize the table settings.
+     */
     private void loadTable() {
         final ArrayList<TableElementBlock> tableBlocks = new ArrayList<>();
         final ArrayList<BankTableBlock> bankBlocks;
@@ -262,6 +265,9 @@ public class GameActivity extends AppCompatActivity {
         return bankBlocks;
     }
 
+    /**
+     * Register to table events.
+     */
     private void setTableListeners() {
 
         if(userSettings.getCurrentLevel() == 2) {
@@ -309,6 +315,10 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handle the end of the game.
+     * @param victorious - If the user win.
+     */
     private void finnishGame(boolean victorious) {
         tableView.setTableEnabled(false);
         resetTimers();
@@ -321,6 +331,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Pops up the Name insert dialog.
+     */
     private void showNameInsertDialog(){
         NameInsertDialog nameDialog = new NameInsertDialog(this);
         SharedPreferences.Editor edit = prefs.edit();
@@ -386,6 +399,9 @@ public class GameActivity extends AppCompatActivity {
         }.start();
     }
 
+    /**
+     * Set full screen
+     */
     private void hideSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
@@ -399,6 +415,9 @@ public class GameActivity extends AppCompatActivity {
         getSupportActionBar().hide();
     }
 
+    /**
+     * Shows the level instructions.
+     */
     private void showInstructions() {
         instructionsTextView.setVisibility(View.VISIBLE);
         instructionsTextView.setText(getInstructionsForTextView());
@@ -453,6 +472,11 @@ public class GameActivity extends AppCompatActivity {
         prefsEditor.apply();
     }
 
+    /**
+     * Initialize the element popup (increased element in table).
+     * @param bankBlocks - The bank blocks.
+     * @param collection - The whole element collections.
+     */
     private void initiateElementsPopup(ArrayList<BankTableBlock> bankBlocks, ElementCollection collection) {
 
         ArrayList<Element> selectedElements = (ArrayList<Element>)collection.getElements().values().stream()

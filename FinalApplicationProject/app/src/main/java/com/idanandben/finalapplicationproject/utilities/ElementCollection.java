@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represent the whole element collection. Also contain Family names and group numbers for elements.
+ */
 public class ElementCollection {
 
     private final Map<Integer, Element> elementMap = new HashMap<>();

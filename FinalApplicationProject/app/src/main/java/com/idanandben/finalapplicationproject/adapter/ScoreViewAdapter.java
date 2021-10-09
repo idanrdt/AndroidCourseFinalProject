@@ -24,9 +24,7 @@ public class ScoreViewAdapter extends RecyclerView.Adapter<ScoreViewAdapter.Recy
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_score, parent, false);
 
-        RecyclerViewHolder viewHolder =new RecyclerViewHolder(view);
-
-        return viewHolder;
+        return new RecyclerViewHolder(view);
     }
 
     @Override
