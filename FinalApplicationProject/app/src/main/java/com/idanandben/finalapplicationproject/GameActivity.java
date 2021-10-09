@@ -1,5 +1,6 @@
 package com.idanandben.finalapplicationproject;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -104,10 +105,10 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                finnishGame(false);
                 if(userSettings.getCurrentLevel() == 2) {
                     elementSwitchTimer.cancel();
                 }
+                finnishGame(false);
             }
         }.start();
     }
@@ -262,6 +263,28 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setTableListeners() {
+
+        if(userSettings.getCurrentLevel() == 2) {
+            tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
+                @Override
+                public void onCorrectElementPlaced() {
+                    elementSwitchTimer.onFinish();
+                    tableView.setTableEnabled(false);
+                }
+
+                @Override
+                public void onWrongElementPlaced() {
+                    elementSwitchTimer.onFinish();
+                    tableView.setTableEnabled(false);
+                }
+
+                @Override
+                public void onTableCompleted() {
+                    elementSwitchTimer.cancel();
+                }
+            });
+        }
+
         tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
             @Override
             public void onCorrectElementPlaced() {
@@ -284,27 +307,6 @@ public class GameActivity extends AppCompatActivity {
                 finnishGame(true);
             }
         });
-
-        if(userSettings.getCurrentLevel() == 2) {
-            tableView.addTableListener(new PeriodicTableView.TableStateListeners() {
-                @Override
-                public void onCorrectElementPlaced() {
-                    elementSwitchTimer.onFinish();
-                    tableView.setTableEnabled(false);
-                }
-
-                @Override
-                public void onWrongElementPlaced() {
-                    elementSwitchTimer.onFinish();
-                    tableView.setTableEnabled(false);
-                }
-
-                @Override
-                public void onTableCompleted() {
-                    elementSwitchTimer.cancel();
-                }
-            });
-        }
     }
 
     private void finnishGame(boolean victorious) {
@@ -320,11 +322,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showNameInsertDialog(){
-        NameInsertDialog dialog = new NameInsertDialog(this);
+        NameInsertDialog nameDialog = new NameInsertDialog(this);
         SharedPreferences.Editor edit = prefs.edit();
         Set<String> scores = new HashSet<>(prefs.getStringSet(ConstProperties.SCORES_PREFERENCES, new HashSet<>()));
 
-        dialog.setDoneButtonListener(name -> {
+        nameDialog.setDoneButtonListener(name -> {
             String nameScoreBuilder = name +
                     " " +
                     userSettings.getScore();
@@ -333,8 +335,8 @@ public class GameActivity extends AppCompatActivity {
             initializeScoreBoard();
         });
 
-        dialog.setCancelButtonListener(this::initializeScoreBoard);
-        dialog.show();
+        nameDialog.setOnCancelListener(dialog -> initializeScoreBoard());
+        nameDialog.show();
     }
 
     private void initializeScoreBoard(){

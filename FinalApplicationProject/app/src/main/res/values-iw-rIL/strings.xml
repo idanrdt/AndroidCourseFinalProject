@@ -100,7 +100,7 @@
     <string name="names_score_column_header">שם</string>
     <string name="score_score_coloumn_header">ניקוד</string>
     <string name="clear_all_score_button">מחיקת הטבלה</string>
-    <string name="custom_game_main_button">מותאים אישית</string>
+    <string name="custom_game_main_button">מותאם אישית</string>
     <string name="leaderboard_main_button">תוצאות</string>
     <string name="quick_start_main_button">משחק מהיר</string>
     <string name="background_music_main_menu_title">מוזיקת רקע</string>
@@ -120,8 +120,8 @@
     <string name="element_family_name_transition_metal">מתכות מעבר</string>
     <string name="element_family_name_basic_metal">מתכות מעבר-עמידות</string>
     <string name="winning_string_info">כל הכבוד, השלב הושלם!</string>
-    <string name="level_1_instructions">יש להעביר את האלמנטים למקומם המתאים</string>
-    <string name="level_3_instructions">יש להתאם את שם האלמנט לסמלו</string>
+    <string name="level_1_instructions">יש להעביר את היסודות למקומם המתאים</string>
+    <string name="level_3_instructions">יש להתאם את שם היסוד לסמלו</string>
     <string name="level_2_instructions">יש לבחור בשם הקבוצה הנכונה</string>
     <string name="time_left_message">"זמן נותר: "</string>
     <string name="instructions_main_menu_button">הוראות</string>
@@ -133,4 +133,7 @@
     <string name="level_1_instructions_text">יש לגרור את היסוד מבנק היסודות למקום אליו שייך בטבלה</string>
     <string name="level_2_instructions_text">יש לבחור במשפחה הכימית אליה שייך היסוד</string>
     <string name="level_3_instructions_text">יש לגרור את שם היסוד למקום אליו שייך בטבלה</string>
+    <string name="name_insert_dialog_name_hint">שם</string>
+    <string name="name_insert_dialog_continue_button">קדימה</string>
+    <string name="name_insert_dialog_name_title">יש להכניס את השם</string>
 </resources>

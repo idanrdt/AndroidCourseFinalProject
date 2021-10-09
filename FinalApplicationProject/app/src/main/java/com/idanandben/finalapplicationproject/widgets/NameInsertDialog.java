@@ -14,17 +14,12 @@ import com.idanandben.finalapplicationproject.R;
 public class NameInsertDialog extends Dialog {
 
     private ContinueListener doneListener;
-    private CancelListener cancelListener;
     private TextInputEditText nameEditText;
     private MaterialButton doneButton;
     private MaterialButton cancelButton;
 
     public interface ContinueListener {
         void onDoneClicked(String name);
-    }
-
-    public interface CancelListener {
-        void onCancelClicked();
     }
 
     public NameInsertDialog(Context context) {
@@ -58,9 +53,6 @@ public class NameInsertDialog extends Dialog {
         doneButton = findViewById(R.id.done_button);
         doneButton.setEnabled(false);
         doneButton.setOnClickListener(v -> doneListener.onDoneClicked(nameEditText.getText().toString()));
-
-        cancelButton = findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(v -> cancelListener.onCancelClicked());
     }
 
     private boolean validateName(String text) {
@@ -69,9 +61,5 @@ public class NameInsertDialog extends Dialog {
 
     public void setDoneButtonListener(ContinueListener listener) {
         this.doneListener = listener;
-    }
-
-    public void setCancelButtonListener(CancelListener listener) {
-        this.cancelListener = listener;
     }
 }
