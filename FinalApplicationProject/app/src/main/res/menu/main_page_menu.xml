@@ -13,4 +13,8 @@
         android:checkable="true"
         android:icon="@drawable/ic_baseline_music_off_24"/>
 
+    <item
+        android:title="@string/instructions_main_menu_button"
+        android:id="@+id/instructions"/>
+
 </menu>

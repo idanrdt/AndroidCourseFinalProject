@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Element\'s Table</string>
+    <string name="app_name">Periodico</string>
     <string name="element_H">מימן</string>
     <string name="element_He">הליום</string>
     <string name="element_Li">ליתיום</string>
@@ -127,4 +127,10 @@
     <string name="instructions_main_menu_button">הוראות</string>
     <string name="points_message">"נקודות: "</string>
     <string name="life_message">"נסיונות: "</string>
+    <string name="level_1_title_text"><u>שלב 1</u></string>
+    <string name="level_2_title_text"><u>שלב 2</u></string>
+    <string name="level_3_title_text"><u>שלב 3</u></string>
+    <string name="level_1_instructions_text">יש לגרור את היסוד מבנק היסודות למקום אליו שייך בטבלה</string>
+    <string name="level_2_instructions_text">יש לבחור במשפחה הכימית אליה שייך היסוד</string>
+    <string name="level_3_instructions_text">יש לגרור את שם היסוד למקום אליו שייך בטבלה</string>
 </resources>

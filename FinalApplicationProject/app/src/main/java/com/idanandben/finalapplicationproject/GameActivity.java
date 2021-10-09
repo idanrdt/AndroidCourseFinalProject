@@ -309,7 +309,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void finnishGame(boolean victorious) {
         tableView.setTableEnabled(false);
-        timer.cancel();
+        resetTimers();
         if (!victorious) {
             BackgroundMusic.startGameLossMusic(getApplicationContext());
             showLossDialog();
@@ -493,6 +493,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        resetTimers();
         finish();
         super.onPause();
     }

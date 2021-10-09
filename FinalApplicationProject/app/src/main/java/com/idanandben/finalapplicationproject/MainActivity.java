@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.idanandben.finalapplicationproject.fragments.CustomGameFragment;
+import com.idanandben.finalapplicationproject.fragments.InstructionsFragment;
 import com.idanandben.finalapplicationproject.fragments.MainMenuFragment;
 import com.idanandben.finalapplicationproject.utilities.BackgroundMusic;
 import com.idanandben.finalapplicationproject.utilities.ConstProperties;
@@ -72,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(!muted);
                 result = true;
                 break;
+            case R.id.instructions:
+                showInstructionsFragment();
+                result = true;
+                break;
             default:
                 result = super.onOptionsItemSelected(item);
         }
@@ -93,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLeaderboardClicked(){leaderboard();}
+            public void onLeaderboardClicked(){ showLeaderboard(); }
         });
 
         getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
@@ -124,7 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 .add(R.id.fragment_container, customGameFragment).addToBackStack(null).commit();
     }
 
-    private void leaderboard(){
+    private void showInstructionsFragment() {
+        InstructionsFragment instructionsFragment = new InstructionsFragment();
+
+        getSupportFragmentManager().beginTransaction().setReorderingAllowed(true)
+                .add(R.id.fragment_container, instructionsFragment).addToBackStack(null).commit();    }
+
+    private void showLeaderboard(){
         Intent intent = new Intent(this, ScoreActivity.class);
         startActivity(intent);
 

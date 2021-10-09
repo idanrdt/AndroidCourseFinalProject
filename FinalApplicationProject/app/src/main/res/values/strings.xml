@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Element\'s Table</string>
+    <string name="app_name">Periodico</string>
     <string name="element_H">Hydrogen</string>
     <string name="element_He">Helium</string>
     <string name="element_Li">Lithium</string>
@@ -126,4 +126,13 @@
     <string name="instructions_main_menu_button">Instructions</string>
     <string name="points_message">"Points: "</string>
     <string name="life_message">"Life: "</string>
+    <string name="level_1_title_text"><u>Level 1</u></string>
+    <string name="level_2_title_text"><u>Level 2</u></string>
+    <string name="level_3_title_text"><u>Level 3</u></string>
+    <string name="level_1_instructions_text">Drag the element from the bank to it\'s correct location on the periodic table</string>
+    <string name="level_2_instructions_text">Select the correct group that belongs to each element</string>
+    <string name="level_3_instructions_text">Place the correct element name to it\'s symbol on the periodic table</string>
+    <string name="level_1_gif">Level 1 gif</string>
+    <string name="level_2_gif">Level 2 gif</string>
+    <string name="level_3_gif">Level 3 gif</string>
 </resources>
