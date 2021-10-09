@@ -20,12 +20,6 @@ import com.idanandben.finalapplicationproject.utilities.UserSettings;
 
 public class MainActivity extends AppCompatActivity {
 
-    //add instructions(VISAULIATY&TEXT)
-    //add gifs
-    //think about timer trail
-    //PPT-idan & ben
-    //poster-idan
-
     private SharedPreferences prefs;
 
     @Override
@@ -45,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < menu.size(); i++) {
             if(menu.getItem(i).getItemId() == R.id.music) {
                 boolean muted = prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, true);
-                menu.getItem(i).setChecked(!muted);
+                menu.getItem(i).setChecked(muted);
             }
         }
         return super.onCreateOptionsMenu(menu);

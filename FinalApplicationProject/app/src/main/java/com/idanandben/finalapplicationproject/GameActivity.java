@@ -170,8 +170,8 @@ public class GameActivity extends AppCompatActivity {
         Collections.shuffle(blockElements);
 
         for(TableElementBlock block : blockElements) {
-            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) &&
-                    (collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) || getFromWanted) {
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71) && (Integer.parseInt(block.getBlockAtomicNumber()) != 103) &&
+                    ((collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) || getFromWanted)) {
 
                 bankAmount++;
                 BankTableBlock bank = new BankTableBlock(block.getElementSymbol(), block.getElementSymbol());
@@ -235,8 +235,8 @@ public class GameActivity extends AppCompatActivity {
         Collections.shuffle(blockElements);
 
         for(TableElementBlock block : blockElements) {
-            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71 && Integer.parseInt(block.getBlockAtomicNumber()) != 103) &&
-                    (collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) || getFromWanted) {
+            if((Integer.parseInt(block.getBlockAtomicNumber()) != 71) && (Integer.parseInt(block.getBlockAtomicNumber()) != 103) &&
+                    ((collection.getWantedList().contains(Integer.parseInt(block.getBlockAtomicNumber()))) || getFromWanted)) {
 
                 bankAmount++;
                 BankTableBlock bank = new BankTableBlock(block.getElementName(), block.getElementSymbol());
