@@ -14,7 +14,7 @@
             android:name=".GameActivity"
             android:screenOrientation="sensorLandscape" />
         <activity android:name=".MainActivity"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
