@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < menu.size(); i++) {
             if(menu.getItem(i).getItemId() == R.id.music) {
                 boolean muted = prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, false);
-                menu.getItem(i).setChecked(muted);
+                menu.getItem(i).setChecked(!muted);
             }
         }
         return super.onCreateOptionsMenu(menu);
@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
                 result = true;
                 break;
             case R.id.music:
-                boolean muted = !item.isChecked();
+                boolean muted = item.isChecked();
                 prefs.edit().putBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES, muted).apply();
-                BackgroundMusic.setMuteState(!muted);
-                item.setChecked(muted);
+                BackgroundMusic.setMuteState(muted);
+                item.setChecked(!muted);
                 result = true;
                 break;
             case R.id.instructions:
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         BackgroundMusic.startBackgroundMusic();
-        BackgroundMusic.setMuteState(!prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES,false));
+        BackgroundMusic.setMuteState(prefs.getBoolean(ConstProperties.MUSIC_ENABLE_PREFERENCES,false));
         super.onResume();
     }
 
